@@ -1,0 +1,10 @@
+{
+  "backbone"            : "/node_modules/backbone/backbone",
+  "backbone.babysitter" : "/node_modules/backbone.babysitter/lib/backbone.babysitter",
+  "backbone.marionette" : "/node_modules/backbone.marionette/lib/core/backbone.marionette",
+  "backbone.wreqr"      : "/node_modules/backbone.wreqr/lib/backbone.wreqr",
+  "jquery"              : "/node_modules/jquery/dist/jquery",
+  "proclaim"            : "/node_modules/proclaim/lib/proclaim",
+  "sinon"               : "/node_modules/sinon/pkg/sinon",
+  "underscore"          : "/node_modules/underscore/underscore"
+}
