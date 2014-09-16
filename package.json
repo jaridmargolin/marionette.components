@@ -2,7 +2,7 @@
   "name": "marionette.components",
   "description": "Marionette Components. A class that more closely couples Marionette.Objects, with Marionette.Views.",
   "author": "Jarid Margolin <jaridmargolin@gmail.com>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/jaridmargolin/marionette.components",
   "repository": {
     "type": "git",
