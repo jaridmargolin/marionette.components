@@ -10,7 +10,7 @@
     // like Node.
     module.exports = factory();
   } else {
-    root['MarionetteComponent'] = factory();
+    root['MarionetteComponents'] = factory();
   }
 }(this, function () {
 
@@ -18,7 +18,7 @@
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
-var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemarionette, _base_, _collection_, composite, item, layout, marionettecomponent;
+var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemarionette, _base_, _collection_, composite, item, layout, marionettecomponents;
 (function () {
   // Baseline setup
   // --------------
@@ -13349,13 +13349,13 @@ layout = function (Marionette, Item) {
   });
 }(backbonemarionette, item);
 /*!
- * marionette.component.js
+ * marionette.components.js
  * 
  * Copyright (c) 2014
  */
-marionettecomponent = function (Base, Collection, Composite, Item, Layout) {
+marionettecomponents = function (Base, Collection, Composite, Item, Layout) {
   /* -----------------------------------------------------------------------------
-   * marionette.component
+   * marionette.components
    * ---------------------------------------------------------------------------*/
   return {
     BaseComponent: Base,
@@ -13366,7 +13366,7 @@ marionettecomponent = function (Base, Collection, Composite, Item, Layout) {
   };
 }(_base_, _collection_, composite, item, layout);
 
-return marionetteComponent;
+return marionetteComponents;
 
 
 }));

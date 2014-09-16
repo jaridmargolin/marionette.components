@@ -1,20 +1,20 @@
 {
-  "name": "marionette.component",
+  "name": "marionette.components",
   "description": "Marionette Components. A class that more closely couples Marionette.Objects, with Marionette.Views.",
   "author": "Jarid Margolin <jaridmargolin@gmail.com>",
   "version": "0.0.1",
-  "homepage": "https://github.com/jaridmargolin/marionette.component",
+  "homepage": "https://github.com/jaridmargolin/marionette.components",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaridmargolin/marionette.component"
+    "url": "https://github.com/jaridmargolin/marionette.components"
   },
   "bugs": {
-    "url": "https://github.com/jaridmargolin/marionette.component/issues"
+    "url": "https://github.com/jaridmargolin/marionette.components/issues"
   },
   "scripts": {
     "test": "grunt test"
   },
-  "main": "dist/common/marionette.component",
+  "main": "dist/common/marionette.components",
   "dependencies": {
     "backbone": "~1.1.0",
     "backbone.babysitter": "~0.1.4",

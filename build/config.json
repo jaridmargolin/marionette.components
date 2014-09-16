@@ -1,4 +1,4 @@
 {
-  "fileName": "marionette.component",
-  "globalAlias": "MarionetteComponent"
+  "fileName": "marionette.components",
+  "globalAlias": "MarionetteComponents"
 }

@@ -1,5 +1,5 @@
 /*!
- * marionette.component.js
+ * marionette.components.js
  * 
  * Copyright (c) 2014
  */
@@ -14,7 +14,7 @@ define([
 
 
 /* -----------------------------------------------------------------------------
- * marionette.component
+ * marionette.components
  * ---------------------------------------------------------------------------*/
 
 return {

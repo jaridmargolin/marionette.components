@@ -1,5 +1,5 @@
 /*!
- * test/marionette.component.js
+ * test/marionette.components.js
  * 
  * Copyright (c) 2014
  */
@@ -7,7 +7,7 @@
 define([
   'proclaim',
   'sinon',
-  'marionette.component'
+  'marionette.components'
 ], function (assert, sinon, Component) {
 
 
@@ -15,7 +15,7 @@ define([
  * test
  * ---------------------------------------------------------------------------*/
 
-describe('marionette.component.js', function () {
+describe('marionette.components.js', function () {
 
   it('Should expose components.', function () {
     assert.ok(Component.CollectionComponent);

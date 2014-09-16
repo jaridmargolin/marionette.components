@@ -1,4 +1,4 @@
-marionette.component [![Build Status](https://travis-ci.org/jaridmargolin/marionette.component.png)](https://travis-ci.org/jaridmargolin/marionette.component)
+marionette.components [![Build Status](https://travis-ci.org/jaridmargolin/marionette.components.png)](https://travis-ci.org/jaridmargolin/marionette.components)
 ========================
 
 A collection of Classes to interact with with Marionette.Views.

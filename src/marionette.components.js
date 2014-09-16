@@ -1,21 +1,23 @@
 /*!
- * marionette.component.js
+ * marionette.components.js
  * 
  * Copyright (c) 2014
  */
 
-var Base = require('./base');
-var Collection = require('./collection');
-var Composite = require('./composite');
-var Item = require('./item');
-var Layout = require('./layout');
+define([
+  './base',
+  './collection',
+  './composite',
+  './item',
+  './layout'
+],function (Base, Collection, Composite, Item, Layout) {
 
 
 /* -----------------------------------------------------------------------------
- * marionette.component
+ * marionette.components
  * ---------------------------------------------------------------------------*/
 
-module.exports = {
+return {
   BaseComponent: Base,
   CollectionComponent: Collection,
   CompositeComponent: Composite,
@@ -24,3 +26,4 @@ module.exports = {
 };
 
 
+});
