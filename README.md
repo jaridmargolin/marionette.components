@@ -123,6 +123,70 @@ The show command also accepts a 5th parameter `preventDestroy`. If passed, your 
 * viewEvents
 * modelsEvents
 
+
+## Temporary Example
+
+Creating an example app would probably be more useful...
+
+```
+/* -----------------------------------------------------------------------------
+ * App
+ * ---------------------------------------------------------------------------*/
+ 
+var AppView = Marionette.LayoutView.extend({
+  el: 'body',
+  template: _.template('<div id="header"></div><div id="body">') ,
+  regions: {
+    'header': '#header',
+    'body': '#body'
+  }
+});
+
+var App = MarionetteComponent.LayoutComponent.extend({
+  View: AppView
+});
+
+/* -----------------------------------------------------------------------------
+ * Nav
+ * ---------------------------------------------------------------------------*/
+
+var NavView = Marionette.ItemView.extend({
+  template: _.template('<h1>{{title}}</h1>')
+});
+
+var Nav = MarionetteComponent.ItemComponent.extend({
+  populate: function (options) {
+    this.model.fetch(); 
+  }
+});
+
+/* -----------------------------------------------------------------------------
+ * Page
+ * ---------------------------------------------------------------------------*/
+
+var PageView = Marionette.ItemView.extend({
+  template: _.template('<h2>{{title}}</h2><p>{{body}}</p>')
+});
+
+var Page = MarionetteComponent.ItemComponent.extend({
+  populate: function (options) {
+    this.model.fetch(options);
+  }
+});
+
+/* -----------------------------------------------------------------------------
+ * Bringing it all together
+ * ---------------------------------------------------------------------------*/
+
+var app  = new App();
+var nav  = app.show('header', 'nav', Nav);
+var page = app.show('body', 'page1', Page);
+
+nav.populate();
+page.populate();
+
+```
+
 ## Tests
 
 **Install Dependencies**
