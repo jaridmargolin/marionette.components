@@ -37,72 +37,61 @@ module.exports = Item.extend({
     this.children = {};
 
     // Create an empty object to store currently shown
-    // components in each region.
+    // components in each region. Key represents the region
+    // and value is a reference to the component stored in
+    // instance variable `children`.
     this.showing = {};
 
     Item.prototype.constructor.apply(this, arguments);    
   },
 
-  /**
-   * Called on controller destroy. Used to destroy children
-   * components and clean up any bound events.
-   *
-   * @private
-   */
-  destroy: function () {
-    _.each(this.children, function (component, key) {
-      var componentName = key.split(':')[1];
 
-      this.destroyChild(componentName, component);
-      delete this.children[key];
-    }, this);
-
-    Item.prototype.destroy.apply(this, arguments);
-  },
+  /* ---------------------------------------------------------------------------
+   * create & show
+   * -------------------------------------------------------------------------*/
 
   /**
    * Show a component within a designated region.
    *
    * @public
    *
-   * @param {string} regionName - 
-   * @param {string} componentName -
-   * @param {constructor} Component -
-   * @param {object} options -
-   * @param {boolean} preventDestroy -
+   * @param {string} regionName - Name of region to display component within.
+   * @param {string} componentName - Name of component to display within region.
+   * @param {constructor} Component - Class of component to instnatiate.
+   * @param {object} options - Options to pass to component at instantiation.
+   * @param {boolean} preventDestroy - Whether or not you should destroy the
+   *   previous Component.
    */
   show: function (regionName, componentName, Component, options, preventDestroy) {
-    var curName  = this.showing[regionName];
-    var curIndex = [regionName, curName].join(':');
-    var newIndex = [regionName, componentName].join(':');
-    var isDiff   = curName !== componentName;
+    var region = this.getRegion(regionName);
+    var currentName = this.showing[regionName];
+    var currentComponent = region[currentName];
 
-    // Life is easy when nothing needs to change
-    if (!isDiff) {
-      return this.children[curIndex];
+    // life is easy when nothing needs to change
+    if (currentName === componentName) {
+      return currentComponent;
     }
 
-    // If another view is currently being show and we don't
+    // if another view is currently being show and we don't
     // want to prevent its destruction...
-    if (curName && !preventDestroy) {
-      this.destroyChild(curName, this.children[curIndex]);
-      delete this.children[curIndex];
+    if (currentName && !preventDestroy) {
+      this.destroyChild(currentComponent, regionName);
+      delete region[currentName];
     }
 
-    // If we don't exist yet, we should.
-    if (!this.children[newIndex]) {
-      this.children[newIndex] = this.createChild(Component, options, regionName);
+    // if we don't exist yet, we should.
+    if (!region[componentName]) {
+      region[componentName] = this.createChild(Component, options, regionName);
     }
 
-    // Show
+    // show
     this.showing[regionName] = componentName;
-    // Bind region controller events
-    this.view[regionName].show(this.children[newIndex].view, {
+    this.view[regionName].show(region[componentName].view, {
       preventDestroy: preventDestroy
     });
 
     // return the new component
-    return this.children[newIndex];
+    return region[componentName];
   },
 
   /**
@@ -111,16 +100,50 @@ module.exports = Item.extend({
    *
    * @private
    *
-   * @param {string} componentName -
-   * @param {constructor} Component -
+   * @param {constructor} Component - Component to instantiate.
+   * @param {string} componentName - Name of component to create
+
    */
   createChild: function (Component, options, regionName) {
     var component = new Component(options || {});
-    var eventsName = regionName + 'Events';
+    var events = this.getRegionEvents(regionName);
 
-    this.bindEntityEvents(component, this.getOption(eventsName));
+    this.bindEntityEvents(component, events);
 
     return component;
+  },
+
+
+  /* ---------------------------------------------------------------------------
+   * destroy
+   * -------------------------------------------------------------------------*/
+
+  /**
+   * Called on controller destroy. Used to destroy children
+   * components and clean up any bound events.
+   *
+   * @private
+   */
+  destroy: function () {
+    _.each(this.children, this.destroyRegionChildren, this);
+
+    Item.prototype.destroy.apply(this, arguments);
+  },
+
+  /**
+   * Destroy all components in a given region.
+   *
+   * @private
+   *
+   * @param {object} region - children region object.
+   * @param {string} regionName - Name of region to destroy.
+   */
+  destroyRegionChildren: function (region, regionName) {
+    _.each(region, function (component, componentName) {
+      this.destroyChild(component, regionName);
+    }, this);
+
+    delete this.children[regionName];
   },
 
   /**
@@ -129,14 +152,46 @@ module.exports = Item.extend({
    *
    * @private
    *
-   * @param {string} componentName -
-   * @param {constructor} Component -
+   * @param {object} component - component to destroy.
+   * @param {string} componentName - Name of component to destroy.
+   * @param {string} regionName - Name of region used to unbind component
+   *   events.
    */
-  destroyChild: function (componentName, component) {
-    var eventsName = componentName + 'Events';
-
-    this.unbindEntityEvents(component, this.getOption(eventsName));
+  destroyChild: function (component, regionName) {
+    var events = this.getRegionEvents(regionName);
+    this.unbindEntityEvents(component, events);
     component.destroy();
+  },
+
+
+  /* ---------------------------------------------------------------------------
+   * utils
+   * -------------------------------------------------------------------------*/
+
+  /**
+   * Return events hash for given 
+   *
+   * @private
+   *
+   * @param {string} regionName - Get events hash for a given region.
+   */
+  getRegionEvents: function (regionName) {
+    return this.getOption(regionName + 'Events');
+  },
+
+  /**
+   * Get region contents from children. If no region exists
+   * set and return empty object.
+   *
+   * @private
+   *
+   * @param {string} regionName - Name of region to return children
+   *   contents from.
+   */
+  getRegion: function (regionName) {
+    var region = this.children[regionName] = this.children[regionName] || {};
+    
+    return region;
   }
 
 });
