@@ -21,7 +21,7 @@ define([
 describe('layout.js', function () {
 
   beforeEach(function () {
-    var template = _.template('<div id="r1">');
+    var template = _.template('<div id="r1"></div><div id="r2"></div>');
 
     var MyLayoutComponent = LayoutComponent.extend({
       r1Events: {
@@ -35,7 +35,7 @@ describe('layout.js', function () {
     this.layoutComponent = new MyLayoutComponent({
       viewOptions: {
         el: '#workboard',
-        regions: { 'r1': '#r1' },
+        regions: { 'r1': '#r1', 'r2': '#r2' },
         template: template
       }
     });
@@ -112,6 +112,38 @@ describe('layout.js', function () {
     c1.trigger('test');
 
     assert.isTrue(this.layoutComponent.tested);
+  });
+
+  it('Should destroy all region components.', function () {
+    var c1 = this.layoutComponent.show('r1', 'component1', this.Component1);
+    var c2 = this.layoutComponent.show('r1', 'component2', this.Component2, {}, true);
+
+    var destroySpy1 = sinon.spy(c1, 'destroy');
+    var destroySpy2 = sinon.spy(c2, 'destroy');
+
+    this.layoutComponent.emptyRegion('r1');
+
+    assert.notOk(this.layoutComponent.children['r1']);
+    assert.notOk(this.layoutComponent.showing['r1']);
+    assert.isTrue(destroySpy1.calledOnce);
+    assert.isTrue(destroySpy2.calledOnce);
+  });
+
+  it('Should destroy components for all regions.', function () {
+    var c1 = this.layoutComponent.show('r1', 'component1', this.Component1);
+    var c2 = this.layoutComponent.show('r2', 'component2', this.Component2, {}, true);
+
+    var destroySpy1 = sinon.spy(c1, 'destroy');
+    var destroySpy2 = sinon.spy(c2, 'destroy');
+
+    this.layoutComponent.empty();
+
+    assert.notOk(this.layoutComponent.children['r1']);
+    assert.notOk(this.layoutComponent.children['r2']);
+    assert.notOk(this.layoutComponent.showing['r1']);
+    assert.notOk(this.layoutComponent.showing['r2']);
+    assert.isTrue(destroySpy1.calledOnce);
+    assert.isTrue(destroySpy2.calledOnce);
   });
 
   it('Should destroy all children components.', function () {

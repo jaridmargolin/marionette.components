@@ -13318,6 +13318,33 @@ layout = function (Marionette, Item) {
       return component;
     },
     /* ---------------------------------------------------------------------------
+     * empty
+     * -------------------------------------------------------------------------*/
+    /**
+     * Loop over all regions with children components, and destroy
+     * components/remove event bindings.
+     *
+     * @public
+     */
+    empty: function () {
+      _.each(this.children, function (regions, regionName) {
+        this.emptyRegion(regionName);
+      }, this);
+    },
+    /**
+     * Empty a given region by name. If no region is provided
+     * all regions will be empty. Pretty much just a wrapper around
+     * destroyRegionChildren.
+     *
+     * @public
+     *
+     * @param {string} regioName - Name of region to empty
+     */
+    emptyRegion: function (regionName) {
+      this.destroyRegionChildren(this.children[regionName], regionName);
+      delete this.showing[regionName];
+    },
+    /* ---------------------------------------------------------------------------
      * destroy
      * -------------------------------------------------------------------------*/
     /**
