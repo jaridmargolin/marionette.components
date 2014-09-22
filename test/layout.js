@@ -61,7 +61,7 @@ describe('layout.js', function () {
     this.layoutComponent.show('r1', 'component1', this.Component1);
     
     assert.ok($('.c1')[0]);
-    assert.ok(this.layoutComponent.children['r1:component1']);
+    assert.ok(this.layoutComponent.children['r1']['component1']);
   });
 
   it('Should destroy previous component in region.', function () {
@@ -91,7 +91,7 @@ describe('layout.js', function () {
     this.layoutComponent.show('r1', 'component1', this.Component1);
     this.layoutComponent.show('r1', 'component2', this.Component2, {}, true);
 
-    assert.ok(this.layoutComponent.children['r1:component1']);
+    assert.ok(this.layoutComponent.children['r1']['component1']);
     assert.isTrue(destroySpy.notCalled);
   });
 
