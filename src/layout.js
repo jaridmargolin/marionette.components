@@ -202,6 +202,19 @@ return Item.extend({
    * -------------------------------------------------------------------------*/
 
   /**
+   * Return the component being show in a given region.
+   *
+   * @public
+   *
+   * @param {string} regionName - Name of region to grab current shown
+   *   component from.
+   */
+  showingIn: function (regionName) {
+    var componentName = this.showing[regionName];
+    return this.children[regionName][componentName];
+  },
+
+  /**
    * Return events hash for given 
    *
    * @private

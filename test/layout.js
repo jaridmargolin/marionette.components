@@ -114,6 +114,12 @@ describe('layout.js', function () {
     assert.isTrue(this.layoutComponent.tested);
   });
 
+  it('Should return component shown in specified region.', function () {
+    var c1 = this.layoutComponent.show('r1', 'component1', this.Component1);
+
+    assert.equal(this.layoutComponent.showingIn('r1'), c1);
+  });
+
   it('Should destroy all region components.', function () {
     var c1 = this.layoutComponent.show('r1', 'component1', this.Component1);
     var c2 = this.layoutComponent.show('r1', 'component2', this.Component2, {}, true);
