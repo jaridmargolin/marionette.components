@@ -1,36 +1,46 @@
 marionette.components [![Build Status](https://travis-ci.org/jaridmargolin/marionette.components.png)](https://travis-ci.org/jaridmargolin/marionette.components)
 ========================
 
-A collection of Classes to interact with with Marionette.Views.
+Reusable components in order to abstract business logic away from your Views.
 
 Views are for displaying and interacting with the DOM. Controllers are for handling app logic. Marionette.Component is a subclass of Marionette.Object that provides an api for interacting with views and their accompanying data (models/collection).
 
-**Goals:**
+### Key Benefits
+* Automatically manages view lifecylce.
+* Manages creation of data entities (models/collections).
+* Provides an interface for interacting with view/model/collection events.
+* Ability to show nested components using layouts.
 
-* View, Model, and Collection instantiation should be managed by component lifecycle.
-* View lifecycle should be coupled with Component (Calling `destroy` on a component, will call `destroy` on the component view).
-* view, model, and collection instances should be attached to component for quick reference.
-* viewEvents, modelEvents, and collectionEvents should be available for easy event management.
-* Should be alble to `show` components in regions.
+## Installation
+
+**npm**
+
+`npm install marionette.components`
+
+**bower**
+
+`bower install marionette.components`
 
 ## Components
 
-`Marionette.Component` includes a Component for each of the 4 Marionette.View types, as well as a Base class holding common functionality used by each of the Component subclasses.
+There is a Component for each of the 4 `Marionette.View` types:
 
-* [BaseComponent](#basecomponent)
 * [ItemComponent](#itemcomponent)
 * [CollectionComponent](#collectioncomponent)
-* [CompositeCompontent](#compositecomponent)
+* [CompositeComponent](#compositecomponent)
 * [LayoutComponent](#layoutcomponent)
 
+Each component extends from `Component`, which provides the core functionality.
 
-**Note**: I will use the term *declared* throughout the documentation. Declared refers to an option set on the Component prototype, or passed in to the component at instantiation through an options object.
+* [Component](#component)
 
-### BaseComponent
+**Note**: I will use the term *declared* throughout the documentation. Declared refers to an option set on the Component prototype, or passed in to the Component at instantiation.
 
-Not intended to be used directly. All Components however, will inherit the majority of their functionality from this Class.
+### Component
 
-#### construcotr/initialize
+Not intended to be used directly. All specialized components inherit the majority of their functionality from this Class.
+
+#### constructor/initialize
 
 A `View` must be declared. A `View` instance will be created and attached to the component. You may declare a `viewOptions` property to be passed to the view at instantiation.
 
@@ -60,7 +70,7 @@ Destroying a component will automatically destroy the component's view. No need 
 
 A subclass of `BaseComponent` intended to work in tandem with `Marionette.ItemView`.
 
-#### construcotr/initialize
+#### constructor/initialize
 
 A View, `Marionette.ItemView`, and a Model, `Backbone.Model`, are set by default. Feel free to override by declaring your own.
 
@@ -86,7 +96,7 @@ A View, `Marionette.CollectionView`, and a Model, `Backbone.Collection`, are set
 
 A subclass of `BaseComponent` intended to work in tandem with `Marionette.CompositeView`.
 
-#### construcotr/initialize
+#### constructor/initialize
 
 A View, `Marionette.CompositeView`, a Model, `Backbone.Model`, and a Collection, `Backbone.Collection`, are set by default. Feel free to override by declaring your own.
 
@@ -100,7 +110,7 @@ A View, `Marionette.CompositeView`, a Model, `Backbone.Model`, and a Collection,
 
 A subclass of `BaseComponent` intended to work in tandem with `Marionette.LayoutView`. The LayoutComponent provides an additional API to handling and working with nested components.
 
-#### construcotr/initialize
+#### constructor/initialize
 
 A View, `Marionette.CompositeView`, and a Model, `Backbone.Model`, are set by default. Feel free to override by declaring your own.
 
