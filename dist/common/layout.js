@@ -57,41 +57,74 @@ module.exports = Item.extend({
    *
    * @param {string} regionName - Name of region to display component within.
    * @param {string} componentName - Name of component to display within region.
-   * @param {constructor} Component - Class of component to instnatiate.
+   * @param {constructor} Constructor - Constructor of component to instnatiate.
    * @param {object} options - Options to pass to component at instantiation.
    * @param {boolean} preventDestroy - Whether or not you should destroy the
    *   previous Component.
    */
-  show: function (regionName, componentName, Component, options, preventDestroy) {
-    var region = this.getRegion(regionName);
-    var currentName = this.showing[regionName];
-    var currentComponent = region[currentName];
+  show: function (regionName, componentName, Constructor, options, preventDestroy) {
+    var regionChildren = this.getRegionChildren(regionName);
+    var showing = this.showing[regionName]; 
+    var cached = regionChildren[componentName];
+
+    // create base child object
+    var child = this.createChild(componentName, Constructor, options);
 
     // life is easy when nothing needs to change
-    if (currentName === componentName) {
-      return currentComponent;
+    if (showing && this.isIdentical(showing, child)) {
+      return showing.instance;
     }
 
-    // if another view is currently being show and we don't
+    // if another view is currently being shown and we don't
     // want to prevent its destruction...
-    if (currentName && !preventDestroy) {
-      this.destroyChild(currentComponent, regionName);
-      delete region[currentName];
+    if (showing && !preventDestroy) {
+      this.destroyChild(regionName, showing);
+      delete regionChildren[showing.name];
     }
 
-    // if we don't exist yet, we should.
-    if (!region[componentName]) {
-      region[componentName] = this.createChild(Component, options, regionName);
+    // if we have a cached component but it is not identical
+    // we need to destroy it.
+    if (cached && !this.isIdentical(cached, child)) {
+      this.destroyChild(regionName, cached);
+      delete regionChildren[componentName];
     }
 
-    // show
-    this.showing[regionName] = componentName;
-    this.view[regionName].show(region[componentName].view, {
+    // make sure our child has an instance, either by creation
+    // or lookup.
+    if (regionChildren[componentName]) {
+      child.instance = regionChildren[componentName].instance;
+    } else {
+      child.instance = this.createInstance(regionName, child);
+    }
+
+    // set child in region children store.
+    regionChildren[componentName] = child;
+
+    // set current showing
+    this.showing[regionName] = child;
+    this.view[regionName].show(child.instance.view, {
       preventDestroy: preventDestroy
     });
 
     // return the new component
-    return region[componentName];
+    return child.instance;
+  },
+
+  /**
+   * Create and return child object.
+   *
+   * @private
+   *
+   * @param {string} componentName - Name of component to display within region.
+   * @param {constructor} Constructor - Constructor of component to instnatiate.
+   * @param {object} options - Options to pass to component at instantiation.
+   */
+  createChild: function (componentName, Constructor, options) {
+    return { 
+      name: componentName,
+      Constructor: Constructor,
+      options: options
+    };
   },
 
   /**
@@ -100,12 +133,11 @@ module.exports = Item.extend({
    *
    * @private
    *
-   * @param {constructor} Component - Component to instantiate.
+   * @param {constructor} Constructor - Constructor to instantiate.
    * @param {string} componentName - Name of component to create
-
    */
-  createChild: function (Component, options, regionName) {
-    var component = new Component(options || {});
+  createInstance: function (regionName, child) {
+    var component = new child.Constructor(child.options || {});
     var events = this.getRegionEvents(regionName);
 
     this.bindEntityEvents(component, events);
@@ -170,8 +202,8 @@ module.exports = Item.extend({
    * @param {string} regionName - Name of region to destroy.
    */
   destroyRegionChildren: function (region, regionName) {
-    _.each(region, function (component, componentName) {
-      this.destroyChild(component, regionName);
+    _.each(region, function (child, componentName) {
+      this.destroyChild(regionName, child);
     }, this);
 
     delete this.children[regionName];
@@ -188,10 +220,10 @@ module.exports = Item.extend({
    * @param {string} regionName - Name of region used to unbind component
    *   events.
    */
-  destroyChild: function (component, regionName) {
+  destroyChild: function (regionName, child) {
     var events = this.getRegionEvents(regionName);
-    this.unbindEntityEvents(component, events);
-    component.destroy();
+    this.unbindEntityEvents(child.instance, events);
+    child.instance.destroy();
   },
 
 
@@ -208,8 +240,11 @@ module.exports = Item.extend({
    *   component from.
    */
   showingIn: function (regionName) {
-    var componentName = this.showing[regionName];
-    return this.children[regionName][componentName];
+    var showing = this.showing[regionName];
+
+    return showing
+      ? showing.instance
+      : null;
   },
 
   /**
@@ -232,10 +267,18 @@ module.exports = Item.extend({
    * @param {string} regionName - Name of region to return children
    *   contents from.
    */
-  getRegion: function (regionName) {
-    var region = this.children[regionName] = this.children[regionName] || {};
-    
-    return region;
+  getRegionChildren: function (regionName) {
+    return this.children[regionName] = this.children[regionName] || {};
+  },
+
+  /**
+   * Overrideable method to determine when a 
+   */
+  isIdentical: function (child1, child2) {
+    var name = child1.name === child2.name;
+    var cons = child1.Constructor === child2.Constructor;
+
+    return name && cons;
   }
 
 });
