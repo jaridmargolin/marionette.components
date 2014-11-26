@@ -80,7 +80,7 @@ describe('layout.js', function () {
     this.layoutComponent.show('r1', 'component1', this.Component1);
     this.layoutComponent.show('r1', 'component2', this.Component2);
 
-    assert.notOk(this.layoutComponent.children['r1:component1']);
+    assert.notOk(this.layoutComponent.children['r1']['component1']);
     assert.isTrue(destroySpy.calledOnce);
   });
 
@@ -99,7 +99,7 @@ describe('layout.js', function () {
     this.layoutComponent.show('r1', 'component1', this.Component1);
     this.layoutComponent.show('r1', 'component2', this.Component2, {}, true);
 
-    var createSpy = sinon.spy(this.layoutComponent, 'createChild');
+    var createSpy = sinon.spy(this.layoutComponent, 'createInstance');
 
     this.layoutComponent.show('r1', 'component1', this.Component1);
 
