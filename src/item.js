@@ -28,7 +28,8 @@ return Base.extend({
    */
   createEntities: function () {
     return {
-      model: this._createEntity('model')
+      model: this._createEntity('model'),
+      collection: this._createEntity('collection'),
     };
   }
 
