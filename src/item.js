@@ -20,18 +20,8 @@ return Base.extend({
   // Default to ItemView
   View: Marionette.ItemView,
   Model: Backbone.Model,
-
-  /**
-   * Attach and return object with model instance.
-   *
-   * @private
-   */
-  createEntities: function () {
-    return {
-      model: this._createEntity('model'),
-      collection: this._createEntity('collection'),
-    };
-  }
+  Collection: Backbone.Collection,
+  entities: ['model', 'collection']
 
 });
 
