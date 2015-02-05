@@ -21,18 +21,7 @@ return Base.extend({
   View: Marionette.CompositeView,
   Model: Backbone.Model,
   Collection: Backbone.Collection,
-
-  /**
-   * Attach and return object with collection and model instances.
-   *
-   * @private
-   */
-  createEntities: function () {
-    return {
-      model: this._createEntity('model'),
-      collection: this._createEntity('collection')
-    };
-  }
+  entities: ['model', 'collection']
 
 });
 

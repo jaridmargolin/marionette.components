@@ -75,7 +75,10 @@ module.exports = Marionette.Object.extend({
    * @private
    */
   createEntities: function () {
-    return {};
+    return _.reduce(this.entities, function (memo, val) {
+      memo[val] = this._createEntity(val);
+      return memo;
+    }, {}, this);
   },
 
   /**

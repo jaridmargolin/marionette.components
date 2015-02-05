@@ -18,17 +18,7 @@ module.exports = Base.extend({
   // Default to CollectionView
   View: Marionette.CollectionView,
   Collection: Backbone.Collection,
-
-  /**
-   * Attach and return object with collection instance.
-   *
-   * @private
-   */
-  createEntities: function () {
-    return {
-      collection: this._createEntity('collection')
-    };
-  }
+  entities: ['collection']
 
 });
 

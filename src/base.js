@@ -46,7 +46,7 @@ return Marionette.Object.extend({
    */
   createView: function () {
     var View = this.getRequired('View');
-    var defaults = this.createEntities();
+    var defaults = this._createEntities();
     var options = this.getOption('viewOptions');
 
     // Render yo!
@@ -76,8 +76,11 @@ return Marionette.Object.extend({
    *
    * @private
    */
-  createEntities: function () {
-    return {};
+  _createEntities: function () {
+    return _.reduce(this.entities, function (memo, val) {
+      memo[val] = this._createEntity(val);
+      return memo;
+    }, {}, this);
   },
 
   /**

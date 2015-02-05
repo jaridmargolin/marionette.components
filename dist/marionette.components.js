@@ -1316,7 +1316,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   }
 }.call(this));
 /*!
- * jQuery JavaScript Library v2.1.1
+ * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -1326,17 +1326,17 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-05-01T17:11Z
+ * Date: 2014-12-18T15:11Z
  */
 (function (global, factory) {
   if (typeof module === 'object' && typeof module.exports === 'object') {
-    // For CommonJS and CommonJS-like environments where a proper window is present,
-    // execute the factory and get jQuery
-    // For environments that do not inherently posses a window with a document
-    // (such as Node.js), expose a jQuery-making factory as module.exports
-    // This accentuates the need for the creation of a real window
+    // For CommonJS and CommonJS-like environments where a proper `window`
+    // is present, execute the factory and get jQuery.
+    // For environments that do not have a `window` with a `document`
+    // (such as Node.js), expose a factory as module.exports.
+    // This accentuates the need for the creation of a real `window`.
     // e.g. var jQuery = require("jquery")(window);
-    // See ticket #14549 for more info
+    // See ticket #14549 for more info.
     module.exports = global.document ? factory(global, true) : function (w) {
       if (!w.document) {
         throw new Error('jQuery requires a window with a document');
@@ -1347,10 +1347,10 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     factory(global);
   }  // Pass this if window is not defined yet
 }(typeof window !== 'undefined' ? window : this, function (window, noGlobal) {
-  // Can't do this because several apps including ASP.NET trace
+  // Support: Firefox 18+
+  // Can't be in strict mode, several libs including ASP.NET trace
   // the stack via arguments.caller.callee and Firefox dies if
   // you try to trace through "use strict" call chains. (#13335)
-  // Support: Firefox 18+
   //
   var arr = [];
   var slice = arr.slice;
@@ -1363,7 +1363,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   var support = {};
   var
     // Use the correct document accordingly with window argument (sandbox)
-    document = window.document, version = '2.1.1',
+    document = window.document, version = '2.1.3',
     // Define a local copy of jQuery
     jQuery = function (selector, context) {
       // The jQuery object is actually just the init constructor 'enhanced'
@@ -1445,7 +1445,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     // Handle a deep copy situation
     if (typeof target === 'boolean') {
       deep = target;
-      // skip the boolean and the target
+      // Skip the boolean and the target
       target = arguments[i] || {};
       i++;
     }
@@ -1453,7 +1453,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     if (typeof target !== 'object' && !jQuery.isFunction(target)) {
       target = {};
     }
-    // extend jQuery itself if only one argument is passed
+    // Extend jQuery itself if only one argument is passed
     if (i === length) {
       target = this;
       i--;
@@ -1498,9 +1498,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     },
     noop: function () {
     },
-    // See test/unit/core.js for details concerning isFunction.
-    // Since version 1.3, DOM methods and functions like alert
-    // aren't supported. They return false on IE (#2968).
     isFunction: function (obj) {
       return jQuery.type(obj) === 'function';
     },
@@ -1512,7 +1509,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       // parseFloat NaNs numeric-cast false positives (null|true|false|"")
       // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
       // subtraction forces infinities to NaN
-      return !jQuery.isArray(obj) && obj - parseFloat(obj) >= 0;
+      // adding 1 corrects loss of precision from parseFloat (#15100)
+      return !jQuery.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
     },
     isPlainObject: function (obj) {
       // Not plain objects:
@@ -1540,7 +1538,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (obj == null) {
         return obj + '';
       }
-      // Support: Android < 4.0, iOS < 6 (functionish RegExp)
+      // Support: Android<4.0, iOS<6 (functionish RegExp)
       return typeof obj === 'object' || typeof obj === 'function' ? class2type[toString.call(obj)] || 'object' : typeof obj;
     },
     // Evaluates a script in a global context
@@ -1563,6 +1561,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
     },
     // Convert dashed to camelCase; used by the css and data modules
+    // Support: IE9-11+
     // Microsoft forgot to hump their vendor prefix (#9572)
     camelCase: function (string) {
       return string.replace(rmsPrefix, 'ms-').replace(rdashAlpha, fcamelCase);
@@ -1714,35 +1713,36 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     return type === 'array' || length === 0 || typeof length === 'number' && length > 0 && length - 1 in obj;
   }
   var Sizzle = /*!
-   * Sizzle CSS Selector Engine v1.10.19
+   * Sizzle CSS Selector Engine v2.2.0-pre
    * http://sizzlejs.com/
    *
-   * Copyright 2013 jQuery Foundation, Inc. and other contributors
+   * Copyright 2008, 2014 jQuery Foundation, Inc. and other contributors
    * Released under the MIT license
    * http://jquery.org/license
    *
-   * Date: 2014-04-18
+   * Date: 2014-12-16
    */
   function (window) {
     var i, support, Expr, getText, isXML, tokenize, compile, select, outermostContext, sortInput, hasDuplicate,
       // Local document vars
       setDocument, document, docElem, documentIsHTML, rbuggyQSA, rbuggyMatches, matches, contains,
       // Instance-specific data
-      expando = 'sizzle' + -new Date(), preferredDoc = window.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), sortOrder = function (a, b) {
+      expando = 'sizzle' + 1 * new Date(), preferredDoc = window.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), sortOrder = function (a, b) {
         if (a === b) {
           hasDuplicate = true;
         }
         return 0;
       },
       // General-purpose constants
-      strundefined = typeof undefined, MAX_NEGATIVE = 1 << 31,
+      MAX_NEGATIVE = 1 << 31,
       // Instance methods
       hasOwn = {}.hasOwnProperty, arr = [], pop = arr.pop, push_native = arr.push, push = arr.push, slice = arr.slice,
-      // Use a stripped-down indexOf if we can't use a native one
-      indexOf = arr.indexOf || function (elem) {
-        var i = 0, len = this.length;
+      // Use a stripped-down indexOf as it's faster than native
+      // http://jsperf.com/thor-indexof-vs-for/5
+      indexOf = function (list, elem) {
+        var i = 0, len = list.length;
         for (; i < len; i++) {
-          if (this[i] === elem) {
+          if (list[i] === elem) {
             return i;
           }
         }
@@ -1766,7 +1766,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       '((?:\\\\.|[^\\\\()[\\]]|' + attributes + ')*)|' + // 3. anything else (capture 2)
       '.*' + ')\\)|)',
       // Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
-      rtrim = new RegExp('^' + whitespace + '+|((?:^|[^\\\\])(?:\\\\.)*)' + whitespace + '+$', 'g'), rcomma = new RegExp('^' + whitespace + '*,' + whitespace + '*'), rcombinators = new RegExp('^' + whitespace + '*([>+~]|' + whitespace + ')' + whitespace + '*'), rattributeQuotes = new RegExp('=' + whitespace + '*([^\\]\'"]*?)' + whitespace + '*\\]', 'g'), rpseudo = new RegExp(pseudos), ridentifier = new RegExp('^' + identifier + '$'), matchExpr = {
+      rwhitespace = new RegExp(whitespace + '+', 'g'), rtrim = new RegExp('^' + whitespace + '+|((?:^|[^\\\\])(?:\\\\.)*)' + whitespace + '+$', 'g'), rcomma = new RegExp('^' + whitespace + '*,' + whitespace + '*'), rcombinators = new RegExp('^' + whitespace + '*([>+~]|' + whitespace + ')' + whitespace + '*'), rattributeQuotes = new RegExp('=' + whitespace + '*([^\\]\'"]*?)' + whitespace + '*\\]', 'g'), rpseudo = new RegExp(pseudos), ridentifier = new RegExp('^' + identifier + '$'), matchExpr = {
         'ID': new RegExp('^#(' + characterEncoding + ')'),
         'CLASS': new RegExp('^\\.(' + characterEncoding + ')'),
         'TAG': new RegExp('^(' + characterEncoding.replace('w', 'w*') + ')'),
@@ -1789,6 +1789,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         return high !== high || escapedWhitespace ? escaped : high < 0 ? // BMP codepoint
         String.fromCharCode(high + 65536) : // Supplemental Plane codepoint (surrogate pair)
         String.fromCharCode(high >> 10 | 55296, high & 1023 | 56320);
+      },
+      // Used for iframes
+      // See setDocument()
+      // Removing the function wrapper causes a "Permission Denied"
+      // error in IE
+      unloadHandler = function () {
+        setDocument();
       };
     // Optimize for push.apply( _, NodeList )
     try {
@@ -1821,15 +1828,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       context = context || document;
       results = results || [];
-      if (!selector || typeof selector !== 'string') {
+      nodeType = context.nodeType;
+      if (typeof selector !== 'string' || !selector || nodeType !== 1 && nodeType !== 9 && nodeType !== 11) {
         return results;
       }
-      if ((nodeType = context.nodeType) !== 1 && nodeType !== 9) {
-        return [];
-      }
-      if (documentIsHTML && !seed) {
-        // Shortcuts
-        if (match = rquickExpr.exec(selector)) {
+      if (!seed && documentIsHTML) {
+        // Try to shortcut find operations when possible (e.g., not under DocumentFragment)
+        if (nodeType !== 11 && (match = rquickExpr.exec(selector))) {
           // Speed-up: Sizzle("#ID")
           if (m = match[1]) {
             if (nodeType === 9) {
@@ -1856,7 +1861,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           } else if (match[2]) {
             push.apply(results, context.getElementsByTagName(selector));
             return results;  // Speed-up: Sizzle(".CLASS")
-          } else if ((m = match[3]) && support.getElementsByClassName && context.getElementsByClassName) {
+          } else if ((m = match[3]) && support.getElementsByClassName) {
             push.apply(results, context.getElementsByClassName(m));
             return results;
           }
@@ -1865,7 +1870,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         if (support.qsa && (!rbuggyQSA || !rbuggyQSA.test(selector))) {
           nid = old = expando;
           newContext = context;
-          newSelector = nodeType === 9 && selector;
+          newSelector = nodeType !== 1 && selector;
           // qSA works strangely on Element-rooted queries
           // We can work around this by specifying an extra ID on the root
           // and working up from there (Thanks to Andrew Dupont for the technique)
@@ -2023,7 +2028,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
      * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
      */
     function testContext(context) {
-      return context && typeof context.getElementsByTagName !== strundefined && context;
+      return context && typeof context.getElementsByTagName !== 'undefined' && context;
     }
     // Expose support vars for convenience
     support = Sizzle.support = {};
@@ -2044,7 +2049,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
      * @returns {Object} Returns the current document
      */
     setDocument = Sizzle.setDocument = function (node) {
-      var hasCompare, doc = node ? node.ownerDocument || node : preferredDoc, parent = doc.defaultView;
+      var hasCompare, parent, doc = node ? node.ownerDocument || node : preferredDoc;
       // If no document and documentElement is available, return
       if (doc === document || doc.nodeType !== 9 || !doc.documentElement) {
         return document;
@@ -2052,8 +2057,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       // Set our document
       document = doc;
       docElem = doc.documentElement;
-      // Support tests
-      documentIsHTML = !isXML(doc);
+      parent = doc.defaultView;
       // Support: IE>8
       // If iframe document is assigned to "document" variable and if iframe has been reloaded,
       // IE will throw "permission denied" error when accessing "document" variable, see jQuery #13936
@@ -2061,19 +2065,19 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (parent && parent !== parent.top) {
         // IE11 does not have attachEvent, so all must suffer
         if (parent.addEventListener) {
-          parent.addEventListener('unload', function () {
-            setDocument();
-          }, false);
+          parent.addEventListener('unload', unloadHandler, false);
         } else if (parent.attachEvent) {
-          parent.attachEvent('onunload', function () {
-            setDocument();
-          });
+          parent.attachEvent('onunload', unloadHandler);
         }
       }
+      /* Support tests
+      	---------------------------------------------------------------------- */
+      documentIsHTML = !isXML(doc);
       /* Attributes
       	---------------------------------------------------------------------- */
       // Support: IE<8
-      // Verify that getAttribute really returns attributes and not properties (excepting IE8 booleans)
+      // Verify that getAttribute really returns attributes and not properties
+      // (excepting IE8 booleans)
       support.attributes = assert(function (div) {
         div.className = 'i';
         return !div.getAttribute('className');
@@ -2085,16 +2089,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         div.appendChild(doc.createComment(''));
         return !div.getElementsByTagName('*').length;
       });
-      // Check if getElementsByClassName can be trusted
-      support.getElementsByClassName = rnative.test(doc.getElementsByClassName) && assert(function (div) {
-        div.innerHTML = '<div class=\'a\'></div><div class=\'a i\'></div>';
-        // Support: Safari<4
-        // Catch class over-caching
-        div.firstChild.className = 'i';
-        // Support: Opera<10
-        // Catch gEBCN failure to find non-leading classes
-        return div.getElementsByClassName('i').length === 2;
-      });
+      // Support: IE<9
+      support.getElementsByClassName = rnative.test(doc.getElementsByClassName);
       // Support: IE<10
       // Check if getElementById returns elements by name
       // The broken getElementById methods don't pick up programatically-set names,
@@ -2106,7 +2102,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       // ID find and filter
       if (support.getById) {
         Expr.find['ID'] = function (id, context) {
-          if (typeof context.getElementById !== strundefined && documentIsHTML) {
+          if (typeof context.getElementById !== 'undefined' && documentIsHTML) {
             var m = context.getElementById(id);
             // Check parentNode to catch when Blackberry 4.6 returns
             // nodes that are no longer in the document #6963
@@ -2126,18 +2122,22 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         Expr.filter['ID'] = function (id) {
           var attrId = id.replace(runescape, funescape);
           return function (elem) {
-            var node = typeof elem.getAttributeNode !== strundefined && elem.getAttributeNode('id');
+            var node = typeof elem.getAttributeNode !== 'undefined' && elem.getAttributeNode('id');
             return node && node.value === attrId;
           };
         };
       }
       // Tag
       Expr.find['TAG'] = support.getElementsByTagName ? function (tag, context) {
-        if (typeof context.getElementsByTagName !== strundefined) {
-          return context.getElementsByTagName(tag);
+        if (typeof context.getElementsByTagName !== 'undefined') {
+          return context.getElementsByTagName(tag);  // DocumentFragment nodes don't have gEBTN
+        } else if (support.qsa) {
+          return context.querySelectorAll(tag);
         }
       } : function (tag, context) {
-        var elem, tmp = [], i = 0, results = context.getElementsByTagName(tag);
+        var elem, tmp = [], i = 0,
+          // By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
+          results = context.getElementsByTagName(tag);
         // Filter out possible comments
         if (tag === '*') {
           while (elem = results[i++]) {
@@ -2151,7 +2151,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       };
       // Class
       Expr.find['CLASS'] = support.getElementsByClassName && function (className, context) {
-        if (typeof context.getElementsByClassName !== strundefined && documentIsHTML) {
+        if (documentIsHTML) {
           return context.getElementsByClassName(className);
         }
       };
@@ -2175,12 +2175,12 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           // setting a boolean content attribute,
           // since its presence should be enough
           // http://bugs.jquery.com/ticket/12359
-          div.innerHTML = '<select msallowclip=\'\'><option selected=\'\'></option></select>';
+          docElem.appendChild(div).innerHTML = '<a id=\'' + expando + '\'></a>' + '<select id=\'' + expando + '-\f]\' msallowcapture=\'\'>' + '<option selected=\'\'></option></select>';
           // Support: IE8, Opera 11-12.16
           // Nothing should be selected when empty strings follow ^= or $= or *=
           // The test attribute must be unknown in Opera but "safe" for WinRT
           // http://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
-          if (div.querySelectorAll('[msallowclip^=\'\']').length) {
+          if (div.querySelectorAll('[msallowcapture^=\'\']').length) {
             rbuggyQSA.push('[*^$]=' + whitespace + '*(?:\'\'|"")');
           }
           // Support: IE8
@@ -2188,11 +2188,21 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           if (!div.querySelectorAll('[selected]').length) {
             rbuggyQSA.push('\\[' + whitespace + '*(?:value|' + booleans + ')');
           }
+          // Support: Chrome<29, Android<4.2+, Safari<7.0+, iOS<7.0+, PhantomJS<1.9.7+
+          if (!div.querySelectorAll('[id~=' + expando + '-]').length) {
+            rbuggyQSA.push('~=');
+          }
           // Webkit/Opera - :checked should return selected option elements
           // http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
           // IE8 throws error here and will not see later tests
           if (!div.querySelectorAll(':checked').length) {
             rbuggyQSA.push(':checked');
+          }
+          // Support: Safari 8+, iOS 8+
+          // https://bugs.webkit.org/show_bug.cgi?id=136851
+          // In-page `selector#id sibing-combinator selector` fails
+          if (!div.querySelectorAll('a#' + expando + '+*').length) {
+            rbuggyQSA.push('.#.+[+~]');
           }
         });
         assert(function (div) {
@@ -2275,7 +2285,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             return 1;
           }
           // Maintain original order
-          return sortInput ? indexOf.call(sortInput, a) - indexOf.call(sortInput, b) : 0;
+          return sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;
         }
         return compare & 4 ? -1 : 1;
       } : function (a, b) {
@@ -2287,7 +2297,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         var cur, i = 0, aup = a.parentNode, bup = b.parentNode, ap = [a], bp = [b];
         // Parentless nodes are either documents or disconnected
         if (!aup || !bup) {
-          return a === doc ? -1 : b === doc ? 1 : aup ? -1 : bup ? 1 : sortInput ? indexOf.call(sortInput, a) - indexOf.call(sortInput, b) : 0;  // If the nodes are siblings, we can do a quick check
+          return a === doc ? -1 : b === doc ? 1 : aup ? -1 : bup ? 1 : sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;  // If the nodes are siblings, we can do a quick check
         } else if (aup === bup) {
           return siblingCheck(a, b);
         }
@@ -2492,7 +2502,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         'CLASS': function (className) {
           var pattern = classCache[className + ' '];
           return pattern || (pattern = new RegExp('(^|' + whitespace + ')' + className + '(' + whitespace + '|$)')) && classCache(className, function (elem) {
-            return pattern.test(typeof elem.className === 'string' && elem.className || typeof elem.getAttribute !== strundefined && elem.getAttribute('class') || '');
+            return pattern.test(typeof elem.className === 'string' && elem.className || typeof elem.getAttribute !== 'undefined' && elem.getAttribute('class') || '');
           });
         },
         'ATTR': function (name, operator, check) {
@@ -2505,7 +2515,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
               return true;
             }
             result += '';
-            return operator === '=' ? result === check : operator === '!=' ? result !== check : operator === '^=' ? check && result.indexOf(check) === 0 : operator === '*=' ? check && result.indexOf(check) > -1 : operator === '$=' ? check && result.slice(-check.length) === check : operator === '~=' ? (' ' + result + ' ').indexOf(check) > -1 : operator === '|=' ? result === check || result.slice(0, check.length + 1) === check + '-' : false;
+            return operator === '=' ? result === check : operator === '!=' ? result !== check : operator === '^=' ? check && result.indexOf(check) === 0 : operator === '*=' ? check && result.indexOf(check) > -1 : operator === '$=' ? check && result.slice(-check.length) === check : operator === '~=' ? (' ' + result.replace(rwhitespace, ' ') + ' ').indexOf(check) > -1 : operator === '|=' ? result === check || result.slice(0, check.length + 1) === check + '-' : false;
           };
         },
         'CHILD': function (type, what, argument, first, last) {
@@ -2598,7 +2608,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             return Expr.setFilters.hasOwnProperty(pseudo.toLowerCase()) ? markFunction(function (seed, matches) {
               var idx, matched = fn(seed, argument), i = matched.length;
               while (i--) {
-                idx = indexOf.call(seed, matched[i]);
+                idx = indexOf(seed, matched[i]);
                 seed[idx] = !(matches[idx] = matched[i]);
               }
             }) : function (elem) {
@@ -2626,6 +2636,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           }) : function (elem, context, xml) {
             input[0] = elem;
             matcher(input, null, xml, results);
+            // Don't keep the element (issue #299)
+            input[0] = null;
             return !results.pop();
           };
         }),
@@ -2635,6 +2647,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           };
         }),
         'contains': markFunction(function (text) {
+          text = text.replace(runescape, funescape);
           return function (elem) {
             return (elem.textContent || elem.innerText || getText(elem)).indexOf(text) > -1;
           };
@@ -2970,7 +2983,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             // Move matched elements from seed to results to keep them synchronized
             i = matcherOut.length;
             while (i--) {
-              if ((elem = matcherOut[i]) && (temp = postFinder ? indexOf.call(seed, elem) : preMap[i]) > -1) {
+              if ((elem = matcherOut[i]) && (temp = postFinder ? indexOf(seed, elem) : preMap[i]) > -1) {
                 seed[temp] = !(results[temp] = elem);
               }
             }
@@ -2991,9 +3004,12 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         matchContext = addCombinator(function (elem) {
           return elem === checkContext;
         }, implicitRelative, true), matchAnyContext = addCombinator(function (elem) {
-          return indexOf.call(checkContext, elem) > -1;
+          return indexOf(checkContext, elem) > -1;
         }, implicitRelative, true), matchers = [function (elem, context, xml) {
-            return !leadingRelative && (xml || context !== outermostContext) || ((checkContext = context).nodeType ? matchContext(elem, context, xml) : matchAnyContext(elem, context, xml));
+            var ret = !leadingRelative && (xml || context !== outermostContext) || ((checkContext = context).nodeType ? matchContext(elem, context, xml) : matchAnyContext(elem, context, xml));
+            // Avoid hanging onto element (issue #299)
+            checkContext = null;
+            return ret;
           }];
       for (; i < len; i++) {
         if (matcher = Expr.relative[tokens[i].type]) {
@@ -3170,7 +3186,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     // One-time assignments
     // Sort stability
     support.sortStable = expando.split('').sort(sortOrder).join('') === expando;
-    // Support: Chrome<14
+    // Support: Chrome 14-35+
     // Always assume duplicates if they aren't passed to the comparison function
     support.detectDuplicates = !!hasDuplicate;
     // Initialize against the default document
@@ -3324,7 +3340,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           // HANDLE: $(html) -> $(array)
           if (match[1]) {
             context = context instanceof jQuery ? context[0] : context;
-            // scripts is true for back-compat
+            // Option to run scripts is true for back-compat
             // Intentionally let the error be thrown if parseHTML is not present
             jQuery.merge(this, jQuery.parseHTML(match[1], context && context.nodeType ? context.ownerDocument || context : document, true));
             // HANDLE: $(html, props)
@@ -3341,8 +3357,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             return this;  // HANDLE: $(#id)
           } else {
             elem = document.getElementById(match[2]);
-            // Check parentNode to catch when Blackberry 4.6 returns
-            // nodes that are no longer in the document #6963
+            // Support: Blackberry 4.6
+            // gEBID returns nodes no longer in the document (#6963)
             if (elem && elem.parentNode) {
               // Inject the element directly into the jQuery object
               this.length = 1;
@@ -3378,7 +3394,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   // Initialize central reference
   rootjQuery = jQuery(document);
   var rparentsprev = /^(?:parents|prev(?:Until|All))/,
-    // methods guaranteed to produce a unique set when starting from a unique set
+    // Methods guaranteed to produce a unique set when starting from a unique set
     guaranteedUnique = {
       children: true,
       contents: true,
@@ -3434,14 +3450,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       return this.pushStack(matched.length > 1 ? jQuery.unique(matched) : matched);
     },
-    // Determine the position of an element within
-    // the matched set of elements
+    // Determine the position of an element within the set
     index: function (elem) {
       // No argument, return index in parent
       if (!elem) {
         return this[0] && this[0].parentNode ? this.first().prevAll().length : -1;
       }
-      // index in selector
+      // Index in selector
       if (typeof elem === 'string') {
         return indexOf.call(jQuery(elem), this[0]);
       }
@@ -3818,7 +3833,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             }
           };
         }, progressValues, progressContexts, resolveContexts;
-      // add listeners to Deferred subordinates; treat others as resolved
+      // Add listeners to Deferred subordinates; treat others as resolved
       if (length > 1) {
         progressValues = new Array(length);
         progressContexts = new Array(length);
@@ -3831,7 +3846,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           }
         }
       }
-      // if we're not waiting on anything, resolve the master
+      // If we're not waiting on anything, resolve the master
       if (!remaining) {
         deferred.resolveWith(resolveContexts, resolveValues);
       }
@@ -3892,7 +3907,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     if (!readyList) {
       readyList = jQuery.Deferred();
       // Catch cases where $(document).ready() is called after the browser event has already occurred.
-      // we once tried to use readyState "interactive" here, but it caused issues like the one
+      // We once tried to use readyState "interactive" here, but it caused issues like the one
       // discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
       if (document.readyState === 'complete') {
         // Handle it asynchronously to allow scripts the opportunity to delay ready
@@ -3958,7 +3973,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     return owner.nodeType === 1 || owner.nodeType === 9 || !+owner.nodeType;
   };
   function Data() {
-    // Support: Android < 4,
+    // Support: Android<4,
     // Old WebKit does not have Object.preventExtensions/freeze method,
     // return new empty object instead with no [[set]] accessor
     Object.defineProperty(this.cache = {}, 0, {
@@ -3966,7 +3981,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         return {};
       }
     });
-    this.expando = jQuery.expando + Math.random();
+    this.expando = jQuery.expando + Data.uid++;
   }
   Data.uid = 1;
   Data.accepts = jQuery.acceptData;
@@ -3987,7 +4002,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         // Secure it in a non-enumerable, non-writable property
         try {
           descriptor[this.expando] = { value: unlock };
-          Object.defineProperties(owner, descriptor);  // Support: Android < 4
+          Object.defineProperties(owner, descriptor);  // Support: Android<4
                                                        // Fallback to a less secure definition
         } catch (e) {
           descriptor[this.expando] = unlock;
@@ -4103,17 +4118,15 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   };
   var data_priv = new Data();
   var data_user = new Data();
-  /*
-  	Implementation Summary
-  
-  	1. Enforce API surface and semantic compatibility with 1.9.x branch
-  	2. Improve the module's maintainability by reducing the storage
-  		paths to a single mechanism.
-  	3. Use the same single mechanism to support "private" and "user" data.
-  	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
-  	5. Avoid exposing implementation details on user objects (eg. expando properties)
-  	6. Provide a clear path for implementation upgrade to WeakMap in 2014
-  */
+  //	Implementation Summary
+  //
+  //	1. Enforce API surface and semantic compatibility with 1.9.x branch
+  //	2. Improve the module's maintainability by reducing the storage
+  //		paths to a single mechanism.
+  //	3. Use the same single mechanism to support "private" and "user" data.
+  //	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
+  //	5. Avoid exposing implementation details on user objects (eg. expando properties)
+  //	6. Provide a clear path for implementation upgrade to WeakMap in 2014
   var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/, rmultiDash = /([A-Z])/g;
   function dataAttr(elem, key, data) {
     var name;
@@ -4272,7 +4285,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         if (type === 'fx') {
           queue.unshift('inprogress');
         }
-        // clear up the last queue stop function
+        // Clear up the last queue stop function
         delete hooks.stop;
         fn.call(elem, next, hooks);
       }
@@ -4280,7 +4293,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         hooks.empty.fire();
       }
     },
-    // not intended for public consumption - generates a queueHooks object, or returns the current one
+    // Not public - generate a queueHooks object, or return the current one
     _queueHooks: function (elem, type) {
       var key = type + 'queueHooks';
       return data_priv.get(elem, key) || data_priv.access(elem, key, {
@@ -4306,7 +4319,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       return data === undefined ? this : this.each(function () {
         var queue = jQuery.queue(this, type, data);
-        // ensure a hooks for this queue
+        // Ensure a hooks for this queue
         jQuery._queueHooks(this, type);
         if (type === 'fx' && queue[0] !== 'inprogress') {
           jQuery.dequeue(this, type);
@@ -4361,18 +4374,19 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   var rcheckableType = /^(?:checkbox|radio)$/i;
   (function () {
     var fragment = document.createDocumentFragment(), div = fragment.appendChild(document.createElement('div')), input = document.createElement('input');
-    // #11217 - WebKit loses check when the name is after the checked attribute
+    // Support: Safari<=5.1
+    // Check state lost if the name is set (#11217)
     // Support: Windows Web Apps (WWA)
-    // `name` and `type` need .setAttribute for WWA
+    // `name` and `type` must use .setAttribute for WWA (#14901)
     input.setAttribute('type', 'radio');
     input.setAttribute('checked', 'checked');
     input.setAttribute('name', 't');
     div.appendChild(input);
-    // Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
-    // old WebKit doesn't clone checked state correctly in fragments
+    // Support: Safari<=5.1, Android<4.2
+    // Older WebKit doesn't clone checked state correctly in fragments
     support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
+    // Support: IE<=11+
     // Make sure textarea (and checkbox) defaultValue is properly cloned
-    // Support: IE9-IE11+
     div.innerHTML = '<textarea>x</textarea>';
     support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
   }());
@@ -4645,8 +4659,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         event.currentTarget = matched.elem;
         j = 0;
         while ((handleObj = matched.handlers[j++]) && !event.isImmediatePropagationStopped()) {
-          // Triggered event must either 1) have no namespace, or
-          // 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
+          // Triggered event must either 1) have no namespace, or 2) have namespace(s)
+          // a subset or equal to those in the bound event (both can have no namespace).
           if (!event.namespace_re || event.namespace_re.test(handleObj.namespace)) {
             event.handleObj = handleObj;
             event.data = handleObj.data;
@@ -4759,7 +4773,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (!event.target) {
         event.target = document;
       }
-      // Support: Safari 6.0+, Chrome < 28
+      // Support: Safari 6.0+, Chrome<28
       // Target should not be a text node (#504, #13143)
       if (event.target.nodeType === 3) {
         event.target = event.target.parentNode;
@@ -4848,7 +4862,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       this.type = src.type;
       // Events bubbling up the document may have been marked as prevented
       // by a handler lower down the tree; reflect the correct value.
-      this.isDefaultPrevented = src.defaultPrevented || src.defaultPrevented === undefined && // Support: Android < 4.0
+      this.isDefaultPrevented = src.defaultPrevented || src.defaultPrevented === undefined && // Support: Android<4.0
       src.returnValue === false ? returnTrue : returnFalse;  // Event type
     } else {
       this.type = src;
@@ -4915,8 +4929,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
     };
   });
-  // Create "bubbling" focus and blur events
   // Support: Firefox, Chrome, Safari
+  // Create "bubbling" focus and blur events
   if (!support.focusinBubbles) {
     jQuery.each({
       focus: 'focusin',
@@ -5044,7 +5058,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i, rscriptType = /^$|\/(?:java|ecma)script/i, rscriptTypeMasked = /^true\/(.*)/, rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
     // We have to close these tags to support XHTML (#13200)
     wrapMap = {
-      // Support: IE 9
+      // Support: IE9
       option: [
         1,
         '<select multiple=\'multiple\'>',
@@ -5076,7 +5090,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         ''
       ]
     };
-  // Support: IE 9
+  // Support: IE9
   wrapMap.optgroup = wrapMap.option;
   wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
   wrapMap.th = wrapMap.td;
@@ -5137,7 +5151,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     var ret = context.getElementsByTagName ? context.getElementsByTagName(tag || '*') : context.querySelectorAll ? context.querySelectorAll(tag || '*') : [];
     return tag === undefined || tag && jQuery.nodeName(context, tag) ? jQuery.merge([context], ret) : ret;
   }
-  // Support: IE >= 9
+  // Fix IE bugs, see support tests
   function fixInput(src, dest) {
     var nodeName = dest.nodeName.toLowerCase();
     // Fails to persist the checked state of a cloned checkbox or radio button.
@@ -5150,8 +5164,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   jQuery.extend({
     clone: function (elem, dataAndEvents, deepDataAndEvents) {
       var i, l, srcElements, destElements, clone = elem.cloneNode(true), inPage = jQuery.contains(elem.ownerDocument, elem);
-      // Support: IE >= 9
-      // Fix Cloning issues
+      // Fix IE cloning issues
       if (!support.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
         // We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
         destElements = getAll(clone);
@@ -5187,8 +5200,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         if (elem || elem === 0) {
           // Add nodes directly
           if (jQuery.type(elem) === 'object') {
-            // Support: QtWebKit
-            // jQuery.merge because push.apply(_, arraylike) throws
+            // Support: QtWebKit, PhantomJS
+            // push.apply(_, arraylike) throws on ancient WebKit
             jQuery.merge(nodes, elem.nodeType ? [elem] : elem);  // Convert non-html into a text node
           } else if (!rhtml.test(elem)) {
             nodes.push(context.createTextNode(elem));  // Convert html into DOM nodes
@@ -5206,13 +5219,12 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             while (j--) {
               tmp = tmp.lastChild;
             }
-            // Support: QtWebKit
-            // jQuery.merge because push.apply(_, arraylike) throws
+            // Support: QtWebKit, PhantomJS
+            // push.apply(_, arraylike) throws on ancient WebKit
             jQuery.merge(nodes, tmp.childNodes);
             // Remember the top-level container
             tmp = fragment.firstChild;
-            // Fixes #12346
-            // Support: Webkit, IE
+            // Ensure the created nodes are orphaned (#12392)
             tmp.textContent = '';
           }
         }
@@ -5482,7 +5494,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   function actualDisplay(name, doc) {
     var style, elem = jQuery(doc.createElement(name)).appendTo(doc.body),
       // getDefaultComputedStyle might be reliably used only on attached element
-      display = window.getDefaultComputedStyle && (style = window.getDefaultComputedStyle(elem[0])) ? // Use of this method is a temporary fix (more like optmization) until something better comes along,
+      display = window.getDefaultComputedStyle && (style = window.getDefaultComputedStyle(elem[0])) ? // Use of this method is a temporary fix (more like optimization) until something better comes along,
       // since it was removed from specification and supported only in FF
       style.display : jQuery.css(elem[0], 'display');
     // We don't have any data stored on the element,
@@ -5518,13 +5530,19 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   var rmargin = /^margin/;
   var rnumnonpx = new RegExp('^(' + pnum + ')(?!px)[a-z%]+$', 'i');
   var getStyles = function (elem) {
-    return elem.ownerDocument.defaultView.getComputedStyle(elem, null);
+    // Support: IE<=11+, Firefox<=30+ (#15098, #14150)
+    // IE throws on elements created in popups
+    // FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
+    if (elem.ownerDocument.defaultView.opener) {
+      return elem.ownerDocument.defaultView.getComputedStyle(elem, null);
+    }
+    return window.getComputedStyle(elem, null);
   };
   function curCSS(elem, name, computed) {
     var width, minWidth, maxWidth, ret, style = elem.style;
     computed = computed || getStyles(elem);
     // Support: IE9
-    // getPropertyValue is only needed for .css('filter') in IE9, see #12537
+    // getPropertyValue is only needed for .css('filter') (#12537)
     if (computed) {
       ret = computed.getPropertyValue(name) || computed[name];
     }
@@ -5559,9 +5577,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     return {
       get: function () {
         if (conditionFn()) {
-          // Hook not needed (or it's not possible to use it due to missing dependency),
-          // remove it.
-          // Since there are no other hooks for marginRight, remove the whole object.
+          // Hook not needed (or it's not possible to use it due
+          // to missing dependency), remove it.
           delete this.get;
           return;
         }
@@ -5575,6 +5592,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     if (!div.style) {
       return;
     }
+    // Support: IE9-11+
+    // Style of cloned element affects source element cloned (#8908)
     div.style.backgroundClip = 'content-box';
     div.cloneNode(true).style.backgroundClip = '';
     support.clearCloneStyle = div.style.backgroundClip === 'content-box';
@@ -5626,6 +5645,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           docElem.appendChild(container);
           ret = !parseFloat(window.getComputedStyle(marginDiv, null).marginRight);
           docElem.removeChild(container);
+          div.removeChild(marginDiv);
           return ret;
         }
       });
@@ -5647,8 +5667,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     return ret;
   };
   var
-    // swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
-    // see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+    // Swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
+    // See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
     rdisplayswap = /^(none|table(?!-c[ea]).+)/, rnumsplit = new RegExp('^(' + pnum + ')(.*)$', 'i'), rrelNum = new RegExp('^([+-])=(' + pnum + ')', 'i'), cssShow = {
       position: 'absolute',
       visibility: 'hidden',
@@ -5662,13 +5682,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       'Moz',
       'ms'
     ];
-  // return a css property mapped to a potentially vendor prefixed property
+  // Return a css property mapped to a potentially vendor prefixed property
   function vendorPropName(style, name) {
-    // shortcut for names that are not vendor prefixed
+    // Shortcut for names that are not vendor prefixed
     if (name in style) {
       return name;
     }
-    // check for vendor prefixed names
+    // Check for vendor prefixed names
     var capName = name[0].toUpperCase() + name.slice(1), origName = name, i = cssPrefixes.length;
     while (i--) {
       name = cssPrefixes[i] + capName;
@@ -5688,7 +5708,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       4 : // Otherwise initialize for horizontal or vertical properties
       name === 'width' ? 1 : 0, val = 0;
     for (; i < 4; i += 2) {
-      // both box models exclude margin, so add it if we want it
+      // Both box models exclude margin, so add it if we want it
       if (extra === 'margin') {
         val += jQuery.css(elem, extra + cssExpand[i], true, styles);
       }
@@ -5697,14 +5717,14 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         if (extra === 'content') {
           val -= jQuery.css(elem, 'padding' + cssExpand[i], true, styles);
         }
-        // at this point, extra isn't border nor margin, so remove border
+        // At this point, extra isn't border nor margin, so remove border
         if (extra !== 'margin') {
           val -= jQuery.css(elem, 'border' + cssExpand[i] + 'Width', true, styles);
         }
       } else {
-        // at this point, extra isn't content, so add padding
+        // At this point, extra isn't content, so add padding
         val += jQuery.css(elem, 'padding' + cssExpand[i], true, styles);
-        // at this point, extra isn't content nor padding, so add border
+        // At this point, extra isn't content nor padding, so add border
         if (extra !== 'padding') {
           val += jQuery.css(elem, 'border' + cssExpand[i] + 'Width', true, styles);
         }
@@ -5715,7 +5735,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   function getWidthOrHeight(elem, name, extra) {
     // Start with offset property, which is equivalent to the border-box value
     var valueIsBorderBox = true, val = name === 'width' ? elem.offsetWidth : elem.offsetHeight, styles = getStyles(elem), isBorderBox = jQuery.css(elem, 'boxSizing', false, styles) === 'border-box';
-    // some non-html elements return undefined for offsetWidth, so check for null/undefined
+    // Some non-html elements return undefined for offsetWidth, so check for null/undefined
     // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
     // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
     if (val <= 0 || val == null) {
@@ -5728,13 +5748,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (rnumnonpx.test(val)) {
         return val;
       }
-      // we need the check for style in case a browser which returns unreliable values
+      // Check for style in case a browser which returns unreliable values
       // for getComputedStyle silently falls back to the reliable elem.style
       valueIsBorderBox = isBorderBox && (support.boxSizingReliable() || val === elem.style[name]);
       // Normalize "", auto, and prepare for extra
       val = parseFloat(val) || 0;
     }
-    // use the active box-sizing model to add/subtract irrelevant styles
+    // Use the active box-sizing model to add/subtract irrelevant styles
     return val + augmentWidthOrHeight(elem, name, extra || (isBorderBox ? 'border' : 'content'), valueIsBorderBox, styles) + 'px';
   }
   function showHide(elements, show) {
@@ -5809,10 +5829,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     },
     // Add in properties whose names you wish to fix before
     // setting or getting the value
-    cssProps: {
-      // normalize float css property
-      'float': 'cssFloat'
-    },
+    cssProps: { 'float': 'cssFloat' },
     // Get and set the style property on a DOM Node
     style: function (elem, name, value, extra) {
       // Don't set styles on text and comment nodes
@@ -5822,28 +5839,27 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       // Make sure that we're working with the right name
       var ret, type, hooks, origName = jQuery.camelCase(name), style = elem.style;
       name = jQuery.cssProps[origName] || (jQuery.cssProps[origName] = vendorPropName(style, origName));
-      // gets hook for the prefixed version
-      // followed by the unprefixed version
+      // Gets hook for the prefixed version, then unprefixed version
       hooks = jQuery.cssHooks[name] || jQuery.cssHooks[origName];
       // Check if we're setting a value
       if (value !== undefined) {
         type = typeof value;
-        // convert relative number strings (+= or -=) to relative numbers. #7345
+        // Convert "+=" or "-=" to relative numbers (#7345)
         if (type === 'string' && (ret = rrelNum.exec(value))) {
           value = (ret[1] + 1) * ret[2] + parseFloat(jQuery.css(elem, name));
           // Fixes bug #9237
           type = 'number';
         }
-        // Make sure that null and NaN values aren't set. See: #7116
+        // Make sure that null and NaN values aren't set (#7116)
         if (value == null || value !== value) {
           return;
         }
-        // If a number was passed in, add 'px' to the (except for certain CSS properties)
+        // If a number, add 'px' to the (except for certain CSS properties)
         if (type === 'number' && !jQuery.cssNumber[origName]) {
           value += 'px';
         }
-        // Fixes #8908, it can be done more correctly by specifying setters in cssHooks,
-        // but it would mean to define eight (for every problematic property) identical functions
+        // Support: IE9-11+
+        // background-* props affect original clone's values
         if (!support.clearCloneStyle && value === '' && name.indexOf('background') === 0) {
           style[name] = 'inherit';
         }
@@ -5864,8 +5880,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       var val, num, hooks, origName = jQuery.camelCase(name);
       // Make sure that we're working with the right name
       name = jQuery.cssProps[origName] || (jQuery.cssProps[origName] = vendorPropName(elem.style, origName));
-      // gets hook for the prefixed version
-      // followed by the unprefixed version
+      // Try prefixed name followed by the unprefixed name
       hooks = jQuery.cssHooks[name] || jQuery.cssHooks[origName];
       // If a hook was provided get the computed value from there
       if (hooks && 'get' in hooks) {
@@ -5875,11 +5890,11 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (val === undefined) {
         val = curCSS(elem, name, styles);
       }
-      //convert "normal" to computed value
+      // Convert "normal" to computed value
       if (val === 'normal' && name in cssNormalTransform) {
         val = cssNormalTransform[name];
       }
-      // Return, converting to number if forced or a qualifier was provided and val looks numeric
+      // Make numeric if forced or a qualifier was provided and val looks numeric
       if (extra === '' || extra) {
         num = parseFloat(val);
         return extra === true || jQuery.isNumeric(num) ? num || 0 : val;
@@ -5894,8 +5909,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     jQuery.cssHooks[name] = {
       get: function (elem, computed, extra) {
         if (computed) {
-          // certain elements can have dimension info if we invisibly show them
-          // however, it must have a current display style that would benefit from this
+          // Certain elements can have dimension info if we invisibly show them
+          // but it must have a current display style that would benefit
           return rdisplayswap.test(jQuery.css(elem, 'display')) && elem.offsetWidth === 0 ? jQuery.swap(elem, cssShow, function () {
             return getWidthOrHeight(elem, name, extra);
           }) : getWidthOrHeight(elem, name, extra);
@@ -5910,8 +5925,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   // Support: Android 2.3
   jQuery.cssHooks.marginRight = addGetHookIf(support.reliableMarginRight, function (elem, computed) {
     if (computed) {
-      // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-      // Work around by temporarily setting element display to inline-block
       return jQuery.swap(elem, { 'display': 'inline-block' }, curCSS, [
         elem,
         'marginRight'
@@ -5927,7 +5940,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     jQuery.cssHooks[prefix + suffix] = {
       expand: function (value) {
         var i = 0, expanded = {},
-          // assumes a single number if not a string
+          // Assumes a single number if not a string
           parts = typeof value === 'string' ? value.split(' ') : [value];
         for (; i < 4; i++) {
           expanded[prefix + cssExpand[i] + suffix] = parts[i] || parts[i - 2] || parts[0];
@@ -6019,17 +6032,18 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         if (tween.elem[tween.prop] != null && (!tween.elem.style || tween.elem.style[tween.prop] == null)) {
           return tween.elem[tween.prop];
         }
-        // passing an empty string as a 3rd parameter to .css will automatically
-        // attempt a parseFloat and fallback to a string if the parse fails
-        // so, simple values such as "10px" are parsed to Float.
-        // complex values such as "rotate(1rad)" are returned as is.
+        // Passing an empty string as a 3rd parameter to .css will automatically
+        // attempt a parseFloat and fallback to a string if the parse fails.
+        // Simple values such as "10px" are parsed to Float;
+        // complex values such as "rotate(1rad)" are returned as-is.
         result = jQuery.css(tween.elem, tween.prop, '');
         // Empty strings, null, undefined and "auto" are converted to 0.
         return !result || result === 'auto' ? 0 : result;
       },
       set: function (tween) {
-        // use step hook for back compat - use cssHook if its there - use .style if its
-        // available and use plain properties where available
+        // Use step hook for back compat.
+        // Use cssHook if its there.
+        // Use .style if available and use plain properties where available.
         if (jQuery.fx.step[tween.prop]) {
           jQuery.fx.step[tween.prop](tween);
         } else if (tween.elem.style && (tween.elem.style[jQuery.cssProps[tween.prop]] != null || jQuery.cssHooks[tween.prop])) {
@@ -6073,13 +6087,13 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             // Iteratively approximate from a nonzero starting point
             start = +target || 1;
             do {
-              // If previous iteration zeroed out, double until we get *something*
-              // Use a string for doubling factor so we don't accidentally see scale as unchanged below
+              // If previous iteration zeroed out, double until we get *something*.
+              // Use string for doubling so we don't accidentally see scale as unchanged below
               scale = scale || '.5';
               // Adjust and apply
               start = start / scale;
-              jQuery.style(tween.elem, prop, start + unit);  // Update scale, tolerating zero or NaN from tween.cur()
-                                                             // And breaking the loop if scale is unchanged or perfect, or if we've just had enough
+              jQuery.style(tween.elem, prop, start + unit);  // Update scale, tolerating zero or NaN from tween.cur(),
+                                                             // break the loop if scale is unchanged or perfect, or if we've just had enough
             } while (scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations);
           }
           // Update tween properties
@@ -6102,8 +6116,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   // Generate parameters to create a standard animation
   function genFx(type, includeWidth) {
     var which, i = 0, attrs = { height: type };
-    // if we include width, step value is 1 to do all cssExpand values,
-    // if we don't include width, step value is 2 to skip over Left and Right
+    // If we include width, step value is 1 to do all cssExpand values,
+    // otherwise step value is 2 to skip over Left and Right
     includeWidth = includeWidth ? 1 : 0;
     for (; i < 4; i += 2 - includeWidth) {
       which = cssExpand[i];
@@ -6118,7 +6132,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     var tween, collection = (tweeners[prop] || []).concat(tweeners['*']), index = 0, length = collection.length;
     for (; index < length; index++) {
       if (tween = collection[index].call(animation, prop, value)) {
-        // we're done with this property
+        // We're done with this property
         return tween;
       }
     }
@@ -6126,7 +6140,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   function defaultPrefilter(elem, props, opts) {
     /* jshint validthis: true */
     var prop, value, toggle, tween, hooks, oldfire, display, checkDisplay, anim = this, orig = {}, style = elem.style, hidden = elem.nodeType && isHidden(elem), dataShow = data_priv.get(elem, 'fxshow');
-    // handle queue: false promises
+    // Handle queue: false promises
     if (!opts.queue) {
       hooks = jQuery._queueHooks(elem, 'fx');
       if (hooks.unqueued == null) {
@@ -6140,8 +6154,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       hooks.unqueued++;
       anim.always(function () {
-        // doing this makes sure that the complete handler will be called
-        // before this completes
+        // Ensure the complete handler is called before this completes
         anim.always(function () {
           hooks.unqueued--;
           if (!jQuery.queue(elem, 'fx').length) {
@@ -6150,7 +6163,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         });
       });
     }
-    // height/width overflow pass
+    // Height/width overflow pass
     if (elem.nodeType === 1 && ('height' in props || 'width' in props)) {
       // Make sure that nothing sneaks out
       // Record all 3 overflow attributes because IE9-10 do not
@@ -6205,7 +6218,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       } else {
         dataShow = data_priv.access(elem, 'fxshow', {});
       }
-      // store state if its toggle - enables .stop().toggle() to "reverse"
+      // Store state if its toggle - enables .stop().toggle() to "reverse"
       if (toggle) {
         dataShow.hidden = !hidden;
       }
@@ -6256,8 +6269,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (hooks && 'expand' in hooks) {
         value = hooks.expand(value);
         delete props[name];
-        // not quite $.extend, this wont overwrite keys already present.
-        // also - reusing 'index' from above because we have the correct "name"
+        // Not quite $.extend, this won't overwrite existing keys.
+        // Reusing 'index' because we have the correct "name"
         for (index in value) {
           if (!(index in props)) {
             props[index] = value[index];
@@ -6271,14 +6284,15 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   }
   function Animation(elem, properties, options) {
     var result, stopped, index = 0, length = animationPrefilters.length, deferred = jQuery.Deferred().always(function () {
-        // don't match elem in the :animated selector
+        // Don't match elem in the :animated selector
         delete tick.elem;
       }), tick = function () {
         if (stopped) {
           return false;
         }
         var currentTime = fxNow || createFxNow(), remaining = Math.max(0, animation.startTime + animation.duration - currentTime),
-          // archaic crash bug won't allow us to use 1 - ( 0.5 || 0 ) (#12497)
+          // Support: Android 2.3
+          // Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
           temp = remaining / animation.duration || 0, percent = 1 - temp, index = 0, length = animation.tweens.length;
         for (; index < length; index++) {
           animation.tweens[index].run(percent);
@@ -6310,7 +6324,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         },
         stop: function (gotoEnd) {
           var index = 0,
-            // if we are going to the end, we want to run all the tweens
+            // If we are going to the end, we want to run all the tweens
             // otherwise we skip this part
             length = gotoEnd ? animation.tweens.length : 0;
           if (stopped) {
@@ -6320,8 +6334,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
           for (; index < length; index++) {
             animation.tweens[index].run(1);
           }
-          // resolve when we played the last frame
-          // otherwise, reject
+          // Resolve when we played the last frame; otherwise, reject
           if (gotoEnd) {
             deferred.resolveWith(elem, [
               animation,
@@ -6385,7 +6398,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
     };
     opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === 'number' ? opt.duration : opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
-    // normalize opt.queue - true/undefined/null -> "fx"
+    // Normalize opt.queue - true/undefined/null -> "fx"
     if (opt.queue == null || opt.queue === true) {
       opt.queue = 'fx';
     }
@@ -6403,8 +6416,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   };
   jQuery.fn.extend({
     fadeTo: function (speed, to, easing, callback) {
-      // show any hidden elements after setting opacity to 0
-      return this.filter(isHidden).css('opacity', 0).show()  // animate to the value specified
+      // Show any hidden elements after setting opacity to 0
+      return this.filter(isHidden).css('opacity', 0).show()  // Animate to the value specified
 .end().animate({ opacity: to }, speed, easing, callback);
     },
     animate: function (prop, speed, easing, callback) {
@@ -6453,9 +6466,9 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             timers.splice(index, 1);
           }
         }
-        // start the next in the queue if the last step wasn't forced
-        // timers currently will call their complete callbacks, which will dequeue
-        // but only if they were gotoEnd
+        // Start the next in the queue if the last step wasn't forced.
+        // Timers currently will call their complete callbacks, which
+        // will dequeue but only if they were gotoEnd.
         if (dequeue || !gotoEnd) {
           jQuery.dequeue(this, type);
         }
@@ -6467,27 +6480,27 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       return this.each(function () {
         var index, data = data_priv.get(this), queue = data[type + 'queue'], hooks = data[type + 'queueHooks'], timers = jQuery.timers, length = queue ? queue.length : 0;
-        // enable finishing flag on private data
+        // Enable finishing flag on private data
         data.finish = true;
-        // empty the queue first
+        // Empty the queue first
         jQuery.queue(this, type, []);
         if (hooks && hooks.stop) {
           hooks.stop.call(this, true);
         }
-        // look for any active animations, and finish them
+        // Look for any active animations, and finish them
         for (index = timers.length; index--;) {
           if (timers[index].elem === this && timers[index].queue === type) {
             timers[index].anim.stop(true);
             timers.splice(index, 1);
           }
         }
-        // look for any animations in the old queue and finish them
+        // Look for any animations in the old queue and finish them
         for (index = 0; index < length; index++) {
           if (queue[index] && queue[index].finish) {
             queue[index].finish.call(this);
           }
         }
-        // turn off finishing flag
+        // Turn off finishing flag
         delete data.finish;
       });
     }
@@ -6570,18 +6583,18 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   (function () {
     var input = document.createElement('input'), select = document.createElement('select'), opt = select.appendChild(document.createElement('option'));
     input.type = 'checkbox';
-    // Support: iOS 5.1, Android 4.x, Android 2.3
-    // Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
+    // Support: iOS<=5.1, Android<=4.2+
+    // Default value for a checkbox should be "on"
     support.checkOn = input.value !== '';
-    // Must access the parent to make an option select properly
-    // Support: IE9, IE10
+    // Support: IE<=11+
+    // Must access selectedIndex to make default options select
     support.optSelected = opt.selected;
-    // Make sure that the options inside disabled selects aren't marked as disabled
-    // (WebKit marks them as disabled)
+    // Support: Android<=2.3
+    // Options inside disabled selects are incorrectly marked as disabled
     select.disabled = true;
     support.optDisabled = !opt.disabled;
-    // Check if an input maintains its value after becoming a radio
-    // Support: IE9, IE10
+    // Support: IE<=11+
+    // An input loses its value after becoming a radio
     input = document.createElement('input');
     input.value = 't';
     input.type = 'radio';
@@ -6650,8 +6663,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       type: {
         set: function (elem, value) {
           if (!support.radioValue && value === 'radio' && jQuery.nodeName(elem, 'input')) {
-            // Setting the type on a radio button after the value resets the value in IE6-9
-            // Reset value to default in case type is set after value during creation
             var val = elem.value;
             elem.setAttribute('type', value);
             if (val) {
@@ -6707,7 +6718,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     },
     prop: function (elem, name, value) {
       var ret, hooks, notxml, nType = elem.nodeType;
-      // don't get/set properties on text, comment and attribute nodes
+      // Don't get/set properties on text, comment and attribute nodes
       if (!elem || nType === 3 || nType === 8 || nType === 2) {
         return;
       }
@@ -6731,8 +6742,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
     }
   });
-  // Support: IE9+
-  // Selectedness for an option in an optgroup can be inaccurate
   if (!support.optSelected) {
     jQuery.propHooks.selected = {
       get: function (elem) {
@@ -6811,7 +6820,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
                 cur = cur.replace(' ' + clazz + ' ', ' ');
               }
             }
-            // only assign if different to avoid unneeded rendering.
+            // Only assign if different to avoid unneeded rendering.
             finalValue = value ? jQuery.trim(cur) : '';
             if (elem.className !== finalValue) {
               elem.className = finalValue;
@@ -6833,10 +6842,10 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }
       return this.each(function () {
         if (type === 'string') {
-          // toggle individual class names
+          // Toggle individual class names
           var className, i = 0, self = jQuery(this), classNames = value.match(rnotwhite) || [];
           while (className = classNames[i++]) {
-            // check each className given, space separated list
+            // Check each className given, space separated list
             if (self.hasClass(className)) {
               self.removeClass(className);
             } else {
@@ -6848,7 +6857,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             // store className if set
             data_priv.set(this, '__className__', this.className);
           }
-          // If the element has a class name or if we're passed "false",
+          // If the element has a class name or if we're passed `false`,
           // then remove the whole classname (if there was one, the above saved it).
           // Otherwise bring back whatever was previously saved (if anything),
           // falling back to the empty string if nothing was stored.
@@ -6877,8 +6886,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             return ret;
           }
           ret = elem.value;
-          return typeof ret === 'string' ? // handle most common string cases
-          ret.replace(rreturn, '') : // handle cases where value is null/undef or number
+          return typeof ret === 'string' ? // Handle most common string cases
+          ret.replace(rreturn, '') : // Handle cases where value is null/undef or number
           ret == null ? '' : ret;
         }
         return;
@@ -6950,7 +6959,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
               optionSet = true;
             }
           }
-          // force browsers to behave consistently when non-matching value is set
+          // Force browsers to behave consistently when non-matching value is set
           if (!optionSet) {
             elem.selectedIndex = -1;
           }
@@ -6973,8 +6982,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     };
     if (!support.checkOn) {
       jQuery.valHooks[this].get = function (elem) {
-        // Support: Webkit
-        // "" is returned instead of "on" if a value isn't specified
         return elem.getAttribute('value') === null ? 'on' : elem.value;
       };
     }
@@ -7029,9 +7036,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     }
     return xml;
   };
-  var
-    // Document location
-    ajaxLocParts, ajaxLocation, rhash = /#.*$/, rts = /([?&])_=[^&]*/, rheaders = /^(.*?):[ \t]*([^\r\n]*)$/gm,
+  var rhash = /#.*$/, rts = /([?&])_=[^&]*/, rheaders = /^(.*?):[ \t]*([^\r\n]*)$/gm,
     // #7653, #8125, #8152: local protocol detection
     rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/, rnoContent = /^(?:GET|HEAD)$/, rprotocol = /^\/\//, rurl = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
     /* Prefilters
@@ -7051,20 +7056,11 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     */
     transports = {},
     // Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-    allTypes = '*/'.concat('*');
-  // #8138, IE may throw an exception when accessing
-  // a field from window.location if document.domain has been set
-  try {
-    ajaxLocation = location.href;
-  } catch (e) {
-    // Use the href attribute of an A element
-    // since IE will modify it given document.location
-    ajaxLocation = document.createElement('a');
-    ajaxLocation.href = '';
-    ajaxLocation = ajaxLocation.href;
-  }
-  // Segment location into parts
-  ajaxLocParts = rurl.exec(ajaxLocation.toLowerCase()) || [];
+    allTypes = '*/'.concat('*'),
+    // Document location
+    ajaxLocation = window.location.href,
+    // Segment location into parts
+    ajaxLocParts = rurl.exec(ajaxLocation.toLowerCase()) || [];
   // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
   function addToPrefiltersOrTransports(structure) {
     // dataTypeExpression is optional and defaults to "*"
@@ -7455,7 +7451,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         return jqXHR;
       }
       // We can fire global events as of now if asked to
-      fireGlobals = s.global;
+      // Don't fire events if jQuery.event is undefined in an AMD-usage scenario (#15118)
+      fireGlobals = jQuery.event && s.global;
       // Watch for a new set of requests
       if (fireGlobals && jQuery.active++ === 0) {
         jQuery.event.trigger('ajaxStart');
@@ -7506,7 +7503,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         // Abort if not done already and return
         return jqXHR.abort();
       }
-      // aborting is no longer a cancellation
+      // Aborting is no longer a cancellation
       strAbort = 'abort';
       // Install callbacks on deferreds
       for (i in {
@@ -7601,8 +7598,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
             isSuccess = !error;
           }
         } else {
-          // We extract error from statusText
-          // then normalize statusText and status for non-aborts
+          // Extract error from statusText and normalize for non-aborts
           error = statusText;
           if (status || !statusText) {
             statusText = 'error';
@@ -7668,7 +7664,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     'post'
   ], function (i, method) {
     jQuery[method] = function (url, data, callback, type) {
-      // shift arguments if data argument was omitted
+      // Shift arguments if data argument was omitted
       if (jQuery.isFunction(data)) {
         type = type || callback;
         callback = data;
@@ -7681,19 +7677,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         data: data,
         success: callback
       });
-    };
-  });
-  // Attach a bunch of functions for handling common AJAX events
-  jQuery.each([
-    'ajaxStart',
-    'ajaxStop',
-    'ajaxComplete',
-    'ajaxError',
-    'ajaxSuccess',
-    'ajaxSend'
-  ], function (i, type) {
-    jQuery.fn[type] = function (fn) {
-      return this.on(type, fn);
     };
   });
   jQuery._evalUrl = function (url) {
@@ -7861,8 +7844,9 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     }, xhrSupported = jQuery.ajaxSettings.xhr();
   // Support: IE9
   // Open requests must be manually aborted on unload (#5280)
-  if (window.ActiveXObject) {
-    jQuery(window).on('unload', function () {
+  // See https://support.microsoft.com/kb/2856746 for more info
+  if (window.attachEvent) {
+    window.attachEvent('onunload', function () {
       for (var key in xhrCallbacks) {
         xhrCallbacks[key]();
       }
@@ -8119,6 +8103,19 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     }
     return this;
   };
+  // Attach a bunch of functions for handling common AJAX events
+  jQuery.each([
+    'ajaxStart',
+    'ajaxStop',
+    'ajaxComplete',
+    'ajaxError',
+    'ajaxSuccess',
+    'ajaxSend'
+  ], function (i, type) {
+    jQuery.fn[type] = function (fn) {
+      return this.on(type, fn);
+    };
+  });
   jQuery.expr.filters.animated = function (elem) {
     return jQuery.grep(jQuery.timers, function (fn) {
       return elem === fn.elem;
@@ -8142,7 +8139,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       curCSSTop = jQuery.css(elem, 'top');
       curCSSLeft = jQuery.css(elem, 'left');
       calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop + curCSSLeft).indexOf('auto') > -1;
-      // Need to be able to calculate position if either top or left is auto and position is either absolute or fixed
+      // Need to be able to calculate position if either
+      // top or left is auto and position is either absolute or fixed
       if (calculatePosition) {
         curPosition = curElem.position();
         curTop = curPosition.top;
@@ -8186,8 +8184,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (!jQuery.contains(docElem, elem)) {
         return box;
       }
+      // Support: BlackBerry 5, iOS 3 (original iPhone)
       // If we don't have gBCR, just use 0,0 rather than error
-      // BlackBerry 5, iOS 3 (original iPhone)
       if (typeof elem.getBoundingClientRect !== strundefined) {
         box = elem.getBoundingClientRect();
       }
@@ -8207,7 +8205,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         };
       // Fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is its only offset parent
       if (jQuery.css(elem, 'position') === 'fixed') {
-        // We assume that getBoundingClientRect is available when computed position is fixed
+        // Assume getBoundingClientRect is there when computed position is fixed
         offset = elem.getBoundingClientRect();
       } else {
         // Get *real* offsetParent
@@ -8257,10 +8255,12 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       }, method, val, arguments.length, null);
     };
   });
+  // Support: Safari<7+, Chrome<37+
   // Add the top/left cssHooks using jQuery.fn.position
   // Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-  // getComputedStyle returns percent when specified for top/left/bottom/right
-  // rather than make the css module depend on the offset module, we just check for it here
+  // Blink bug: https://code.google.com/p/chromium/issues/detail?id=229280
+  // getComputedStyle returns percent when specified for top/left/bottom/right;
+  // rather than make the css module depend on the offset module, just check for it here
   jQuery.each([
     'top',
     'left'
@@ -8268,7 +8268,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     jQuery.cssHooks[prop] = addGetHookIf(support.pixelPosition, function (elem, computed) {
       if (computed) {
         computed = curCSS(elem, prop);
-        // if curCSS returns percentage, fallback to offset
+        // If curCSS returns percentage, fallback to offset
         return rnumnonpx.test(computed) ? jQuery(elem).position()[prop] + 'px' : computed;
       }
     });
@@ -8283,7 +8283,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       content: type,
       '': 'outer' + name
     }, function (defaultExtra, funcName) {
-      // margin is only for outerHeight, outerWidth
+      // Margin is only for outerHeight, outerWidth
       jQuery.fn[funcName] = function (margin, value) {
         var chainable = arguments.length && (defaultExtra || typeof margin !== 'boolean'), extra = defaultExtra || (margin === true || value === true ? 'margin' : 'border');
         return access(this, function (elem, type, value) {
@@ -8343,8 +8343,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     }
     return jQuery;
   };
-  // Expose jQuery and $ identifiers, even in
-  // AMD (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
+  // Expose jQuery and $ identifiers, even in AMD
+  // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
   // and CommonJS for browser emulators (#13566)
   if (typeof noGlobal === strundefined) {
     window.jQuery = window.$ = jQuery;
@@ -10289,9 +10289,9 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
 }));
 // Backbone.BabySitter
 // -------------------
-// v0.1.4
+// v0.1.6
 //
-// Copyright (c)2014 Derick Bailey, Muted Solutions, LLC.
+// Copyright (c)2015 Derick Bailey, Muted Solutions, LLC.
 // Distributed under MIT license
 //
 // http://github.com/marionettejs/backbone.babysitter
@@ -10442,7 +10442,8 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       'last',
       'without',
       'isEmpty',
-      'pluck'
+      'pluck',
+      'reduce'
     ];
     _.each(methods, function (method) {
       Container.prototype[method] = function () {
@@ -10454,7 +10455,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     // return the public API
     return Container;
   }(Backbone, _);
-  Backbone.ChildViewContainer.VERSION = '0.1.4';
+  Backbone.ChildViewContainer.VERSION = '0.1.6';
   Backbone.ChildViewContainer.noConflict = function () {
     Backbone.ChildViewContainer = previousChildViewContainer;
     return this;
@@ -10463,7 +10464,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
 }));
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
-// v2.2.0
+// v2.2.2
 //
 // Copyright (c)2014 Derick Bailey, Muted Solutions, LLC.
 // Distributed under MIT license
@@ -10487,7 +10488,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
   
   var previousMarionette = root.Marionette;
   var Marionette = Backbone.Marionette = {};
-  Marionette.VERSION = '2.2.0';
+  Marionette.VERSION = '2.2.2';
   Marionette.noConflict = function () {
     root.Marionette = previousMarionette;
     return this;
@@ -10799,7 +10800,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     'number'
   ];
   Marionette.Error = Marionette.extend.call(Error, {
-    urlRoot: 'http://marionettejs.com/docs/' + Marionette.VERSION + '/',
+    urlRoot: 'http://marionettejs.com/docs/v' + Marionette.VERSION + '/',
     constructor: function (message, options) {
       if (_.isObject(message)) {
         options = message;
@@ -11047,11 +11048,14 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       var isDifferentView = view !== this.currentView;
       var preventDestroy = !!showOptions.preventDestroy;
       var forceShow = !!showOptions.forceShow;
-      // we are only changing the view if there is a view to change to begin with
+      // We are only changing the view if there is a current view to change to begin with
       var isChangingView = !!this.currentView;
-      // only destroy the view if we don't want to preventDestroy and the view is different
-      var _shouldDestroyView = !preventDestroy && isDifferentView;
-      // show the view if the view is different or if you want to re-show the view
+      // Only destroy the current view if we don't want to `preventDestroy` and if
+      // the view given in the first argument is different than `currentView`
+      var _shouldDestroyView = isDifferentView && !preventDestroy;
+      // Only show the view given in the first argument if it is different than
+      // the current view or if we want to re-show the view. Note that if
+      // `_shouldDestroyView` is true, then `_shouldShowView` is also necessarily true.
       var _shouldShowView = isDifferentView || forceShow;
       if (isChangingView) {
         this.triggerMethod('before:swapOut', this.currentView);
@@ -11065,17 +11069,17 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
         // If this happens we need to remove the reference
         // to the currentView since once a view has been destroyed
         // we can not reuse it.
-        view.once('destroy', _.bind(this.empty, this));
+        view.once('destroy', this.empty, this);
         view.render();
         if (isChangingView) {
           this.triggerMethod('before:swap', view);
         }
         this.triggerMethod('before:show', view);
         Marionette.triggerMethodOn(view, 'before:show');
+        this.attachHtml(view);
         if (isChangingView) {
           this.triggerMethod('swapOut', this.currentView);
         }
-        this.attachHtml(view);
         this.currentView = view;
         if (isChangingView) {
           this.triggerMethod('swap', view);
@@ -11116,6 +11120,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       if (!view) {
         return;
       }
+      view.off('destroy', this.empty, this);
       this.triggerMethod('before:empty', view);
       this._destroyView();
       this.triggerMethod('empty', view);
@@ -11530,7 +11535,7 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
       // Call destroy on each behavior after
       // destroying the view.
       // This unbinds event listeners
-      // that behaviors have registerd for.
+      // that behaviors have registered for.
       _.invoke(this._behaviors, 'destroy', args);
       return this;
     },
@@ -11725,7 +11730,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     }
   });
   /* jshint maxstatements: 14 */
-  /* jshint maxlen: 200 */
   // Collection View
   // ---------------
   // A view that iterates over a Backbone.Collection
@@ -11741,9 +11745,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     constructor: function (options) {
       var initOptions = options || {};
       this.sort = _.isUndefined(initOptions.sort) ? true : initOptions.sort;
-      if (initOptions.collection && !(initOptions.collection instanceof Backbone.Collection)) {
-        throw new Marionette.Error('The Collection option passed to this view needs to be an instance of a Backbone.Collection');
-      }
       this.once('render', this._initialEvents);
       this._initChildViewStorage();
       Marionette.View.apply(this, arguments);
@@ -12315,7 +12316,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     },
     // Add a single region, by name, to the layoutView
     addRegion: function (name, definition) {
-      this.triggerMethod('before:region:add', name);
       var regions = {};
       regions[name] = definition;
       return this._buildRegions(regions)[name];
@@ -12327,7 +12327,6 @@ var underscore, jquery, backbone, backbonewreqr, backbonebabysitter, backbonemar
     },
     // Remove a single region from the LayoutView, by name
     removeRegion: function (name) {
-      this.triggerMethod('before:region:remove', name);
       delete this.regions[name];
       return this.regionManager.removeRegion(name);
     },
@@ -13091,7 +13090,10 @@ _base_ = function (Marionette) {
      * @private
      */
     createEntities: function () {
-      return {};
+      return _.reduce(this.entities, function (memo, val) {
+        memo[val] = this._createEntity(val);
+        return memo;
+      }, {}, this);
     },
     /**
      * Create entity (if not yet created). Add instance to component
@@ -13165,14 +13167,7 @@ _collection_ = function (Backbone, Marionette, Base) {
     // Default to CollectionView
     View: Marionette.CollectionView,
     Collection: Backbone.Collection,
-    /**
-     * Attach and return object with collection instance.
-     *
-     * @private
-     */
-    createEntities: function () {
-      return { collection: this._createEntity('collection') };
-    }
+    entities: ['collection']
   });
 }(backbone, backbonemarionette, _base_);
 /*!
@@ -13189,17 +13184,10 @@ composite = function (Backbone, Marionette, Base) {
     View: Marionette.CompositeView,
     Model: Backbone.Model,
     Collection: Backbone.Collection,
-    /**
-     * Attach and return object with collection and model instances.
-     *
-     * @private
-     */
-    createEntities: function () {
-      return {
-        model: this._createEntity('model'),
-        collection: this._createEntity('collection')
-      };
-    }
+    entities: [
+      'model',
+      'collection'
+    ]
   });
 }(backbone, backbonemarionette, _base_);
 /*!
@@ -13215,14 +13203,11 @@ item = function (Backbone, Marionette, Base) {
     // Default to ItemView
     View: Marionette.ItemView,
     Model: Backbone.Model,
-    /**
-     * Attach and return object with model instance.
-     *
-     * @private
-     */
-    createEntities: function () {
-      return { model: this._createEntity('model') };
-    }
+    Collection: Backbone.Collection,
+    entities: [
+      'model',
+      'collection'
+    ]
   });
 }(backbone, backbonemarionette, _base_);
 /*!
