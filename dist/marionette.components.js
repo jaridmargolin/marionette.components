@@ -13063,7 +13063,7 @@ _base_ = function (Marionette) {
      */
     createView: function () {
       var View = this.getRequired('View');
-      var defaults = this.createEntities();
+      var defaults = this._createEntities();
       var options = this.getOption('viewOptions');
       // Render yo!
       this.view = new View(_.extend({}, defaults, options));
@@ -13089,7 +13089,7 @@ _base_ = function (Marionette) {
      *
      * @private
      */
-    createEntities: function () {
+    _createEntities: function () {
       return _.reduce(this.entities, function (memo, val) {
         memo[val] = this._createEntity(val);
         return memo;
