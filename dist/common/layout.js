@@ -51,36 +51,12 @@ module.exports = Item.extend({
    * -------------------------------------------------------------------------*/
 
   /**
-   * Show a component within a designated region.
    *
-   * @public
-   *
-   * @param {string} regionName - Name of region to display component within.
-   * @param {string} componentName - Name of component to display within region.
-   * @param {constructor} Constructor - Constructor of component to instnatiate.
-   * @param {object} options - Options to pass to component at instantiation.
-   * @param {boolean} preventDestroy - Whether or not you should destroy the
-   *   previous Component.
    */
-  show: function (regionName, componentName, Constructor, options, preventDestroy) {
+  createInRegion: function (regionName, componentName, Constructor, options) {
     var regionChildren = this.getRegionChildren(regionName);
-    var showing = this.showing[regionName]; 
     var cached = regionChildren[componentName];
-
-    // create base child object
     var child = this.createChild(componentName, Constructor, options);
-
-    // life is easy when nothing needs to change
-    if (showing && this.isIdentical(showing, child)) {
-      return showing.instance;
-    }
-
-    // if another view is currently being shown and we don't
-    // want to prevent its destruction...
-    if (showing && !preventDestroy) {
-      this.destroyChild(regionName, showing);
-      delete regionChildren[showing.name];
-    }
 
     // if we have a cached component but it is not identical
     // we need to destroy it.
@@ -97,8 +73,39 @@ module.exports = Item.extend({
       child.instance = this.createInstance(regionName, child);
     }
 
-    // set child in region children store.
     regionChildren[componentName] = child;
+
+    return child;
+  },
+
+  /**
+   * Show a component within a designated region.
+   *
+   * @public
+   *
+   * @param {string} regionName - Name of region to display component within.
+   * @param {string} componentName - Name of component to display within region.
+   * @param {constructor} Constructor - Constructor of component to instnatiate.
+   * @param {object} options - Options to pass to component at instantiation.
+   * @param {boolean} preventDestroy - Whether or not you should destroy the
+   *   previous Component.
+   */
+  show: function (regionName, componentName, Constructor, options, preventDestroy) {
+    var regionChildren = this.getRegionChildren(regionName);
+    var child = this.createInRegion(regionName, componentName, Constructor, options);
+    var showing = this.showing[regionName]; 
+
+    // life is easy when nothing needs to change
+    if (showing && this.isIdentical(showing, child)) {
+      return showing.instance;
+    }
+
+    // if another view is currently being shown and we don't
+    // want to prevent its destruction...
+    if (showing && !preventDestroy) {
+      this.destroyChild(regionName, showing);
+      delete regionChildren[showing.name];
+    }
 
     // set current showing
     this.showing[regionName] = child;
