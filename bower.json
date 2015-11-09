@@ -1,6 +1,6 @@
 {
   "name": "marionette.components",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "dependencies": {
     "backbone": "~1.1.0",
     "backbone.babysitter": "~0.1.4",
