@@ -21,6 +21,7 @@ define([
 describe('layout.js', function () {
 
   beforeEach(function () {
+    var $workboard = $('#workboard');
     var template = _.template('<div id="r1"></div><div id="r2"></div>');
 
     var MyLayoutComponent = LayoutComponent.extend({
@@ -34,7 +35,6 @@ describe('layout.js', function () {
 
     this.layoutComponent = new MyLayoutComponent({
       viewOptions: {
-        el: '#workboard',
         regions: { 'r1': '#r1', 'r2': '#r2' },
         template: template
       }
@@ -54,7 +54,7 @@ describe('layout.js', function () {
       }
     });
 
-    this.layoutComponent.view.render();
+    $workboard.html(this.layoutComponent.view.render().el);
   });
 
   it('Should show component view in region.', function () {
@@ -163,6 +163,15 @@ describe('layout.js', function () {
 
     assert.isTrue(destroySpy1.calledOnce);
     assert.isTrue(destroySpy2.calledOnce);
+  });
+
+  it('Should hide component within specified region.', function () {
+    var c1 = this.layoutComponent.show('r1', 'component1', this.Component1);
+    this.layoutComponent.hide('r1');
+
+    assert.equal(this.layoutComponent.children['r1']['component1'].instance, c1);
+    assert.notOk(this.layoutComponent.showing['r1']);
+    assert.notOk(this.layoutComponent.view['r1'].currentView);
   });
 
 });

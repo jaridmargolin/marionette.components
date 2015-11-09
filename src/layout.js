@@ -120,6 +120,18 @@ return Item.extend({
   },
 
   /**
+   * Hide currently shown item in specified region.
+   *
+   * @public
+   *
+   * @param {string} regionName - Name of region to hide contents of.
+   */
+  hide: function (regionName) {
+    this.view[regionName].empty({preventDestroy: true});
+    delete this.showing[regionName];
+  },
+
+  /**
    * Create and return child object.
    *
    * @private
