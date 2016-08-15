@@ -5,8 +5,9 @@
  */
 
 define([
+  'underscore',
   'backbone.marionette'
-], function (Marionette) {
+], function (_, Marionette) {
 
 
 /* -----------------------------------------------------------------------------
@@ -114,7 +115,7 @@ return Marionette.Object.extend({
     var instance = this.getOption(instanceName);
 
     if (instance) {
-      return instance;
+      return _.isFunction(instance) ? instance.call(this) : instance;
     }
 
     var objName = instanceName.substring(0, 1).toUpperCase() + instanceName.substring(1);

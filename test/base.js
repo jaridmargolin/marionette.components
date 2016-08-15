@@ -95,6 +95,14 @@ describe('base.js', function () {
       assert.equal(component.model, model);
     });
 
+    it('Should use model fn from component.', function () {
+      var model = function () { return new this.Model(); };
+      var MyCustomComponent = this.MyComponent.extend({ model: model });
+      var component = new this.MyComponent();
+
+      assert.isInstanceOf(component.model, this.MyModel);
+    });
+
     it('Should bind model events from component.', function () {
       this.component.model.trigger.call(this.component.model, 'test');
       assert.isTrue(this.component.tested);
@@ -139,6 +147,13 @@ describe('base.js', function () {
       var component = new this.MyComponent({ model: model });
 
       assert.equal(component.model, model);
+    });
+
+    it('Should use model fn from component.', function () {
+      var model = function () { return new Backbone.Model(); };
+      var component = new this.MyComponent({ model: model });
+
+      assert.isInstanceOf(component.model, Backbone.Model);
     });
 
     it('Should bind model events to component.', function () {
