@@ -18,6 +18,10 @@ define([
 
 return Marionette.Object.extend({
 
+  Model: Backbone.Model,
+  Collection: Backbone.Collection,
+  entities: ['model', 'collection'],
+
   /**
    * Overwrite Marionette.Object constructor to add a createComponent
    * step inbetween setting options and initialize call.

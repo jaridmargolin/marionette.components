@@ -5,10 +5,9 @@
  */
 
 define([
-  'backbone',
   'backbone.marionette',
   './base'
-], function (Backbone, Marionette, Base) {
+], function (Marionette, Base) {
 
 
 /* -----------------------------------------------------------------------------
@@ -17,11 +16,7 @@ define([
 
 return Base.extend({
 
-  // Default to CompositeView
-  View: Marionette.CompositeView,
-  Model: Backbone.Model,
-  Collection: Backbone.Collection,
-  entities: ['model', 'collection']
+  View: Marionette.CompositeView
 
 });
 
